@@ -116,12 +116,17 @@
             padding: 2rem;
             overflow-y: auto;
             background: var(--dark);
+            display: flex;
+            flex-direction: column;
         }
         
         .main-content-wrapper {
             width: 100%;
             max-width: 1600px;
             margin: 0 auto;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
         }
 
         .header {
@@ -495,7 +500,7 @@
         /* Footer */
         .site-footer {
             text-align: center;
-            padding: 2rem 0 1rem;
+            padding: 1.5rem 0 0;
             color: var(--gray);
             font-size: 0.9rem;
             margin-top: auto;
@@ -684,10 +689,23 @@
         const noProjectsMessage = document.getElementById('no-projects-message');
         
         // --- App State ---
-        let projects = JSON.parse(localStorage.getItem('projects')) || [];
+        let projects = [];
         let currentFilter = 'all';
 
         // --- Functions ---
+
+        // Load projects safely from localStorage
+        function loadProjects() {
+            try {
+                const storedProjects = localStorage.getItem('projects');
+                const parsedProjects = storedProjects ? JSON.parse(storedProjects) : [];
+                // Ensure it's always an array
+                projects = Array.isArray(parsedProjects) ? parsedProjects : [];
+            } catch (error) {
+                console.error("Failed to load projects from localStorage:", error);
+                projects = []; // Reset to empty array on error
+            }
+        }
 
         // Toast Notification Function
         function showToast(message, type = 'success') {
@@ -725,6 +743,7 @@
             document.getElementById('stat-ongoing').textContent = projects.filter(p => p.status === 'ongoing').length;
             document.getElementById('stat-completed').textContent = projects.filter(p => p.status === 'completed').length;
             document.getElementById('stat-delayed').textContent = projects.filter(p => p.status === 'delayed').length;
+             document.getElementById('stat-pending').textContent = projects.filter(p => p.status === 'pending').length;
         }
 
         // Render Projects
@@ -739,8 +758,12 @@
                 return matchesFilter && matchesSearch;
             });
             
-            if (filteredProjects.length === 0) {
+            if (projects.length === 0) {
+                 noProjectsMessage.style.display = 'block';
+                 noProjectsMessage.querySelector('p').textContent = 'No projects yet. Click "Add Project" to get started!';
+            } else if (filteredProjects.length === 0) {
                 noProjectsMessage.style.display = 'block';
+                 noProjectsMessage.querySelector('p').textContent = 'No projects match your current search or filter.';
             } else {
                 noProjectsMessage.style.display = 'none';
             }
@@ -803,18 +826,10 @@
 
         // --- Event Listeners ---
 
-        // Open modal for adding
         addProjectBtn.addEventListener('click', () => openModal('add'));
-
-        // Close modal listeners
         closeModalBtn.addEventListener('click', closeModal);
-        window.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                closeModal();
-            }
-        });
+        window.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 
-        // Form submission (Add/Edit)
         projectForm.addEventListener('submit', function(e) {
             e.preventDefault();
             
@@ -831,10 +846,7 @@
                     showToast('Project updated successfully!', 'info');
                 }
             } else { // Adding new project
-                const newProject = {
-                    id: Date.now(),
-                    name, status, progress, due
-                };
+                const newProject = { id: Date.now(), name, status, progress, due };
                 projects.push(newProject);
                 showToast('Project added successfully!', 'success');
             }
@@ -844,7 +856,6 @@
             closeModal();
         });
 
-        // Table actions (Edit/Delete) using event delegation
         projectsTbody.addEventListener('click', function(e) {
             const target = e.target.closest('button');
             if (!target) return;
@@ -866,10 +877,8 @@
             }
         });
 
-        // Search functionality
         searchInput.addEventListener('input', renderProjects);
 
-        // Filter functionality
         filterButtonsContainer.addEventListener('click', function(e) {
             if (e.target.tagName === 'BUTTON') {
                 document.querySelector('.filter-buttons button.active').classList.remove('active');
@@ -880,6 +889,7 @@
         });
 
         // --- Initial Load ---
+        loadProjects();
         renderProjects();
     });
     </script>
