@@ -116,17 +116,12 @@
             padding: 2rem;
             overflow-y: auto;
             background: var(--dark);
-            display: flex;
-            flex-direction: column;
         }
         
         .main-content-wrapper {
             width: 100%;
             max-width: 1600px;
             margin: 0 auto;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
         }
 
         .header {
@@ -500,7 +495,7 @@
         /* Footer */
         .site-footer {
             text-align: center;
-            padding: 1.5rem 0 0;
+            padding: 2rem 0 1rem;
             color: var(--gray);
             font-size: 0.9rem;
             margin-top: auto;
@@ -574,10 +569,6 @@
                         <h3>Completed</h3>
                         <div class="value" id="stat-completed">0</div>
                     </div>
-                    <div class="stat-card pending">
-                        <h3>Pending</h3>
-                        <div class="value" id="stat-pending">0</div>
-                    </div>
                     <div class="stat-card delayed">
                         <h3>Delayed</h3>
                         <div class="value" id="stat-delayed">0</div>
@@ -622,8 +613,8 @@
                                 <!-- Project rows will be inserted here dynamically -->
                             </tbody>
                         </table>
-                         <div id="no-projects-message" style="display: block;">
-                            <p>No projects yet. Click "Add Project" to get started!</p>
+                         <div id="no-projects-message" style="display: none;">
+                            <p>No projects found. Add your first project to get started!</p>
                         </div>
                     </div>
                 </div>
@@ -693,23 +684,10 @@
         const noProjectsMessage = document.getElementById('no-projects-message');
         
         // --- App State ---
-        let projects = [];
+        let projects = JSON.parse(localStorage.getItem('projects')) || [];
         let currentFilter = 'all';
 
         // --- Functions ---
-
-        // Load projects safely from localStorage
-        function loadProjects() {
-            try {
-                const storedProjects = localStorage.getItem('projects');
-                const parsedProjects = storedProjects ? JSON.parse(storedProjects) : [];
-                // Ensure it's always an array
-                projects = Array.isArray(parsedProjects) ? parsedProjects : [];
-            } catch (error) {
-                console.error("Failed to load projects from localStorage:", error);
-                projects = []; // Reset to empty array on error
-            }
-        }
 
         // Toast Notification Function
         function showToast(message, type = 'success') {
@@ -747,7 +725,6 @@
             document.getElementById('stat-ongoing').textContent = projects.filter(p => p.status === 'ongoing').length;
             document.getElementById('stat-completed').textContent = projects.filter(p => p.status === 'completed').length;
             document.getElementById('stat-delayed').textContent = projects.filter(p => p.status === 'delayed').length;
-             document.getElementById('stat-pending').textContent = projects.filter(p => p.status === 'pending').length;
         }
 
         // Render Projects
@@ -762,12 +739,8 @@
                 return matchesFilter && matchesSearch;
             });
             
-            if (projects.length === 0) {
-                 noProjectsMessage.style.display = 'block';
-                 noProjectsMessage.querySelector('p').textContent = 'No projects yet. Click "Add Project" to get started!';
-            } else if (filteredProjects.length === 0) {
+            if (filteredProjects.length === 0) {
                 noProjectsMessage.style.display = 'block';
-                 noProjectsMessage.querySelector('p').textContent = 'No projects match your current search or filter.';
             } else {
                 noProjectsMessage.style.display = 'none';
             }
@@ -830,10 +803,18 @@
 
         // --- Event Listeners ---
 
+        // Open modal for adding
         addProjectBtn.addEventListener('click', () => openModal('add'));
-        closeModalBtn.addEventListener('click', closeModal);
-        window.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 
+        // Close modal listeners
+        closeModalBtn.addEventListener('click', closeModal);
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+        // Form submission (Add/Edit)
         projectForm.addEventListener('submit', function(e) {
             e.preventDefault();
             
@@ -850,7 +831,10 @@
                     showToast('Project updated successfully!', 'info');
                 }
             } else { // Adding new project
-                const newProject = { id: Date.now(), name, status, progress, due };
+                const newProject = {
+                    id: Date.now(),
+                    name, status, progress, due
+                };
                 projects.push(newProject);
                 showToast('Project added successfully!', 'success');
             }
@@ -860,6 +844,7 @@
             closeModal();
         });
 
+        // Table actions (Edit/Delete) using event delegation
         projectsTbody.addEventListener('click', function(e) {
             const target = e.target.closest('button');
             if (!target) return;
@@ -881,8 +866,10 @@
             }
         });
 
+        // Search functionality
         searchInput.addEventListener('input', renderProjects);
 
+        // Filter functionality
         filterButtonsContainer.addEventListener('click', function(e) {
             if (e.target.tagName === 'BUTTON') {
                 document.querySelector('.filter-buttons button.active').classList.remove('active');
@@ -893,7 +880,6 @@
         });
 
         // --- Initial Load ---
-        loadProjects();
         renderProjects();
     });
     </script>
