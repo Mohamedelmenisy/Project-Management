@@ -122,23 +122,11 @@
         }
 
      .main-content-wrapper {
-    width: calc(100% - 260px); /* يغطي العرض بالكامل مع خصم مساحة الـ sidebar */
-    margin-left: 260px; /* علشان يبدأ بعد القائمة الجانبية */
-    padding: 2rem 2.5rem; /* تظبيط المسافات الداخلية */
-    box-sizing: border-box;
-}
+        width: 100%;
+        padding: 2rem 2.5rem;
+        box-sizing: border-box;
+    }
 
-@media (min-width: 1600px) {
-    .main-content-wrapper {
-        max-width: 1400px;
-    }
-}
-@media (max-width: 1366px) {
-    .main-content-wrapper {
-        transform: scale(0.9);
-        transform-origin: top center;
-    }
-}
         .header {
             display: flex;
             justify-content: space-between;
