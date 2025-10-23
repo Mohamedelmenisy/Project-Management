@@ -115,6 +115,12 @@
             background: var(--dark);
         }
 
+        .main-content-wrapper {
+            width: 100%;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
         .header {
             display: flex;
             justify-content: space-between;
@@ -232,6 +238,8 @@
             padding: 1.5rem;
             box-shadow: var(--box-shadow);
             backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
         }
 
         .chart-card h3 {
@@ -242,6 +250,8 @@
 
         .chart-container {
             position: relative;
+            flex-grow: 1;
+            min-height: 300px;
         }
 
         /* Projects Section */
@@ -629,7 +639,7 @@
             }
             
             .chart-container {
-                height: 250px;
+                min-height: 250px;
             }
         }
     </style>
@@ -654,375 +664,377 @@
 
         <!-- Main Content -->
         <div class="main-content">
-            <!-- Header -->
-            <div class="header">
-                <h2 id="section-title">Project Dashboard</h2>
-                <div class="user-info">
-                    <div class="user-avatar">ME</div>
-                    <div>
-                        <div>Mohamed Elmenisy</div>
-                        <div style="font-size: 0.85rem; color: var(--gray);">Project Manager</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Dashboard Content -->
-            <div id="dashboard-content" class="section-content active">
-                <!-- Stats Cards -->
-                <div class="stats-container">
-                    <div class="stat-card">
-                        <h3>Total Projects</h3>
-                        <div class="value">12</div>
-                        <div class="trend up"><i class="fas fa-arrow-up"></i> 2 new this month</div>
-                    </div>
-                    <div class="stat-card ongoing">
-                        <h3>In Progress</h3>
-                        <div class="value">5</div>
-                        <div class="trend up"><i class="fas fa-arrow-up"></i> 1 started today</div>
-                    </div>
-                    <div class="stat-card completed">
-                        <h3>Completed</h3>
-                        <div class="value">4</div>
-                        <div class="trend up"><i class="fas fa-arrow-up"></i> 2 this week</div>
-                    </div>
-                    <div class="stat-card delayed">
-                        <h3>Delayed</h3>
-                        <div class="value">3</div>
-                        <div class="trend down"><i class="fas fa-arrow-down"></i> 1 resolved</div>
-                    </div>
-                </div>
-
-                <!-- Charts Section -->
-                <div class="charts-container">
-                    <div class="chart-card">
-                        <h3>Project Progress</h3>
-                        <div class="chart-container">
-                            <canvas id="progressChart"></canvas>
-                        </div>
-                    </div>
-                    <div class="chart-card">
-                        <h3>Task Distribution</h3>
-                        <div class="chart-container">
-                            <canvas id="taskChart"></canvas>
+            <div class="main-content-wrapper">
+                <!-- Header -->
+                <div class="header">
+                    <h2 id="section-title">Project Dashboard</h2>
+                    <div class="user-info">
+                        <div class="user-avatar">ME</div>
+                        <div>
+                            <div>Mohamed Elmenisy</div>
+                            <div style="font-size: 0.85rem; color: var(--gray);">Project Manager</div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Projects Section -->
-                <div class="projects-section">
-                    <div class="section-header">
-                        <h3>My Projects</h3>
-                        <button class="btn" id="add-project-btn"><i class="fas fa-plus"></i> Add Project</button>
-                    </div>
-                    <table class="projects-table">
-                        <thead>
-                            <tr>
-                                <th>Project Name</th>
-                                <th>Status</th>
-                                <th>Progress</th>
-                                <th>Due Date</th>
-                                <th>Team</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td class="project-name">Elevo Core Development</td>
-                                <td><span class="status ongoing">In Progress</span></td>
-                                <td>
-                                    <div class="progress-bar">
-                                        <div class="progress ongoing" style="width: 75%"></div>
-                                    </div>
-                                    <div style="font-size: 0.85rem; margin-top: 0.25rem;">75%</div>
-                                </td>
-                                <td>Jun 15, 2023</td>
-                                <td>
-                                    <div style="display: flex;">
-                                        <div class="user-avatar" style="width: 30px; height: 30px; font-size: 0.8rem; margin-right: 0.5rem;">ME</div>
-                                        <div class="user-avatar" style="width: 30px; height: 30px; font-size: 0.8rem; background: linear-gradient(135deg, var(--secondary), #a78bfa);">AS</div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <button class="action-btn edit-project" data-project="Elevo Core Development"><i class="fas fa-edit"></i></button>
-                                    <button class="action-btn delete-project" data-project="Elevo Core Development"><i class="fas fa-trash"></i></button>
-                                    <button class="action-btn view-analytics" data-project="Elevo Core Development"><i class="fas fa-chart-line"></i></button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="project-name">Mobile App UI/UX</td>
-                                <td><span class="status completed">Completed</span></td>
-                                <td>
-                                    <div class="progress-bar">
-                                        <div class="progress completed" style="width: 100%"></div>
-                                    </div>
-                                    <div style="font-size: 0.85rem; margin-top: 0.25rem;">100%</div>
-                                </td>
-                                <td>May 28, 2023</td>
-                                <td>
-                                    <div style="display: flex;">
-                                        <div class="user-avatar" style="width: 30px; height: 30px; font-size: 0.8rem; margin-right: 0.5rem; background: linear-gradient(135deg, var(--warning), #fbbf24);">JD</div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <button class="action-btn edit-project" data-project="Mobile App UI/UX"><i class="fas fa-edit"></i></button>
-                                    <button class="action-btn delete-project" data-project="Mobile App UI/UX"><i class="fas fa-trash"></i></button>
-                                    <button class="action-btn view-analytics" data-project="Mobile App UI/UX"><i class="fas fa-chart-line"></i></button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Recent Activity -->
-                <div class="activity-section">
-                    <div class="section-header">
-                        <h3>Recent Activity</h3>
-                    </div>
-                    <ul class="activity-list">
-                        <li class="activity-item">
-                            <div class="activity-icon project">
-                                <i class="fas fa-project-diagram"></i>
-                            </div>
-                            <div class="activity-content">
-                                <p><strong>Elevo Core Development</strong> project progress updated to 75%</p>
-                                <div class="activity-time">2 hours ago</div>
-                            </div>
-                        </li>
-                        <li class="activity-item">
-                            <div class="activity-icon task">
-                                <i class="fas fa-tasks"></i>
-                            </div>
-                            <div class="activity-content">
-                                <p>New task assigned to you in <strong>E-commerce Platform</strong></p>
-                                <div class="activity-time">5 hours ago</div>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- Projects Section Content -->
-            <div id="projects-content" class="section-content">
-                <div class="projects-section">
-                    <div class="section-header">
-                        <h3>All Projects</h3>
-                        <button class="btn" id="add-project-btn-2"><i class="fas fa-plus"></i> Add Project</button>
-                    </div>
+                <!-- Dashboard Content -->
+                <div id="dashboard-content" class="section-content active">
+                    <!-- Stats Cards -->
                     <div class="stats-container">
                         <div class="stat-card">
-                            <h3>Active Projects</h3>
-                            <div class="value">8</div>
-                            <div class="trend up"><i class="fas fa-arrow-up"></i> 2 from last week</div>
+                            <h3>Total Projects</h3>
+                            <div class="value">12</div>
+                            <div class="trend up"><i class="fas fa-arrow-up"></i> 2 new this month</div>
                         </div>
                         <div class="stat-card ongoing">
-                            <h3>Behind Schedule</h3>
-                            <div class="value">3</div>
-                            <div class="trend down"><i class="fas fa-arrow-down"></i> 1 improved</div>
-                        </div>
-                    </div>
-                    <div class="chart-card" style="margin-top: 1.5rem;">
-                        <h3>Project Timeline</h3>
-                        <div class="chart-container">
-                            <canvas id="timelineChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Tasks Section Content -->
-            <div id="tasks-content" class="section-content">
-                <div class="projects-section">
-                    <div class="section-header">
-                        <h3>Task Management</h3>
-                        <button class="btn"><i class="fas fa-plus"></i> Add Task</button>
-                    </div>
-                    <div class="stats-container">
-                        <div class="stat-card">
-                            <h3>Total Tasks</h3>
-                            <div class="value">47</div>
-                            <div class="trend up"><i class="fas fa-arrow-up"></i> 5 new today</div>
+                            <h3>In Progress</h3>
+                            <div class="value">5</div>
+                            <div class="trend up"><i class="fas fa-arrow-up"></i> 1 started today</div>
                         </div>
                         <div class="stat-card completed">
                             <h3>Completed</h3>
-                            <div class="value">32</div>
-                            <div class="trend up"><i class="fas fa-arrow-up"></i> 68% done</div>
-                        </div>
-                        <div class="stat-card pending">
-                            <h3>Pending</h3>
-                            <div class="value">12</div>
-                            <div class="trend down"><i class="fas fa-arrow-down"></i> 3 completed</div>
+                            <div class="value">4</div>
+                            <div class="trend up"><i class="fas fa-arrow-up"></i> 2 this week</div>
                         </div>
                         <div class="stat-card delayed">
-                            <h3>Overdue</h3>
+                            <h3>Delayed</h3>
                             <div class="value">3</div>
                             <div class="trend down"><i class="fas fa-arrow-down"></i> 1 resolved</div>
                         </div>
                     </div>
-                    <div style="margin-top: 1.5rem;">
-                        <h4 style="margin-bottom: 1rem;">Task Priority</h4>
-                        <div class="progress-bar" style="margin-bottom: 0.5rem;">
-                            <div class="progress delayed" style="width: 15%"></div>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--gray);">
-                            <span>High Priority: 15%</span>
-                            <span>7 tasks</span>
-                        </div>
-                        
-                        <div class="progress-bar" style="margin: 1rem 0 0.5rem;">
-                            <div class="progress pending" style="width: 45%"></div>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--gray);">
-                            <span>Medium Priority: 45%</span>
-                            <span>21 tasks</span>
-                        </div>
-                        
-                        <div class="progress-bar" style="margin: 1rem 0 0.5rem;">
-                            <div class="progress ongoing" style="width: 40%"></div>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--gray);">
-                            <span>Low Priority: 40%</span>
-                            <span>19 tasks</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Calendar Section Content -->
-            <div id="calendar-content" class="section-content">
-                <div class="projects-section">
-                    <h3>Project Calendar</h3>
-                    <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.5rem; margin-top: 1.5rem;">
-                        <div style="text-align: center; padding: 1rem; background: rgba(99, 102, 241, 0.1); border-radius: var(--border-radius);">
-                            <div style="font-size: 0.85rem; color: var(--gray);">Mon</div>
-                            <div style="font-weight: 600; margin-top: 0.5rem;">12</div>
+                    <!-- Charts Section -->
+                    <div class="charts-container">
+                        <div class="chart-card">
+                            <h3>Project Progress</h3>
+                            <div class="chart-container">
+                                <canvas id="progressChart"></canvas>
+                            </div>
                         </div>
-                        <div style="text-align: center; padding: 1rem; background: rgba(99, 102, 241, 0.1); border-radius: var(--border-radius);">
-                            <div style="font-size: 0.85rem; color: var(--gray);">Tue</div>
-                            <div style="font-weight: 600; margin-top: 0.5rem;">13</div>
-                        </div>
-                        <div style="text-align: center; padding: 1rem; background: rgba(16, 185, 129, 0.2); border-radius: var(--border-radius); border: 1px solid rgba(16, 185, 129, 0.3);">
-                            <div style="font-size: 0.85rem; color: var(--success);">Wed</div>
-                            <div style="font-weight: 600; margin-top: 0.5rem;">14</div>
-                            <div style="font-size: 0.7rem; margin-top: 0.5rem; color: var(--success);">Deadline</div>
-                        </div>
-                        <div style="text-align: center; padding: 1rem; background: rgba(99, 102, 241, 0.1); border-radius: var(--border-radius);">
-                            <div style="font-size: 0.85rem; color: var(--gray);">Thu</div>
-                            <div style="font-weight: 600; margin-top: 0.5rem;">15</div>
-                        </div>
-                        <div style="text-align: center; padding: 1rem; background: rgba(99, 102, 241, 0.1); border-radius: var(--border-radius);">
-                            <div style="font-size: 0.85rem; color: var(--gray);">Fri</div>
-                            <div style="font-weight: 600; margin-top: 0.5rem;">16</div>
-                        </div>
-                        <div style="text-align: center; padding: 1rem; background: rgba(99, 102, 241, 0.1); border-radius: var(--border-radius);">
-                            <div style="font-size: 0.85rem; color: var(--gray);">Sat</div>
-                            <div style="font-weight: 600; margin-top: 0.5rem;">17</div>
-                        </div>
-                        <div style="text-align: center; padding: 1rem; background: rgba(99, 102, 241, 0.1); border-radius: var(--border-radius);">
-                            <div style="font-size: 0.85rem; color: var(--gray);">Sun</div>
-                            <div style="font-weight: 600; margin-top: 0.5rem;">18</div>
+                        <div class="chart-card">
+                            <h3>Task Distribution</h3>
+                            <div class="chart-container">
+                                <canvas id="taskChart"></canvas>
+                            </div>
                         </div>
                     </div>
-                    <div style="margin-top: 2rem;">
-                        <h4 style="margin-bottom: 1rem;">Upcoming Deadlines</h4>
+
+                    <!-- Projects Section -->
+                    <div class="projects-section">
+                        <div class="section-header">
+                            <h3>My Projects</h3>
+                            <button class="btn" id="add-project-btn"><i class="fas fa-plus"></i> Add Project</button>
+                        </div>
+                        <table class="projects-table">
+                            <thead>
+                                <tr>
+                                    <th>Project Name</th>
+                                    <th>Status</th>
+                                    <th>Progress</th>
+                                    <th>Due Date</th>
+                                    <th>Team</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="project-name">Elevo Core Development</td>
+                                    <td><span class="status ongoing">In Progress</span></td>
+                                    <td>
+                                        <div class="progress-bar">
+                                            <div class="progress ongoing" style="width: 75%"></div>
+                                        </div>
+                                        <div style="font-size: 0.85rem; margin-top: 0.25rem;">75%</div>
+                                    </td>
+                                    <td>Jun 15, 2023</td>
+                                    <td>
+                                        <div style="display: flex;">
+                                            <div class="user-avatar" style="width: 30px; height: 30px; font-size: 0.8rem; margin-right: 0.5rem;">ME</div>
+                                            <div class="user-avatar" style="width: 30px; height: 30px; font-size: 0.8rem; background: linear-gradient(135deg, var(--secondary), #a78bfa);">AS</div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <button class="action-btn edit-project" data-project="Elevo Core Development"><i class="fas fa-edit"></i></button>
+                                        <button class="action-btn delete-project" data-project="Elevo Core Development"><i class="fas fa-trash"></i></button>
+                                        <button class="action-btn view-analytics" data-project="Elevo Core Development"><i class="fas fa-chart-line"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="project-name">Mobile App UI/UX</td>
+                                    <td><span class="status completed">Completed</span></td>
+                                    <td>
+                                        <div class="progress-bar">
+                                            <div class="progress completed" style="width: 100%"></div>
+                                        </div>
+                                        <div style="font-size: 0.85rem; margin-top: 0.25rem;">100%</div>
+                                    </td>
+                                    <td>May 28, 2023</td>
+                                    <td>
+                                        <div style="display: flex;">
+                                            <div class="user-avatar" style="width: 30px; height: 30px; font-size: 0.8rem; margin-right: 0.5rem; background: linear-gradient(135deg, var(--warning), #fbbf24);">JD</div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <button class="action-btn edit-project" data-project="Mobile App UI/UX"><i class="fas fa-edit"></i></button>
+                                        <button class="action-btn delete-project" data-project="Mobile App UI/UX"><i class="fas fa-trash"></i></button>
+                                        <button class="action-btn view-analytics" data-project="Mobile App UI/UX"><i class="fas fa-chart-line"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="activity-section">
+                        <div class="section-header">
+                            <h3>Recent Activity</h3>
+                        </div>
                         <ul class="activity-list">
                             <li class="activity-item">
-                                <div class="activity-icon task">
-                                    <i class="fas fa-flag"></i>
+                                <div class="activity-icon project">
+                                    <i class="fas fa-project-diagram"></i>
                                 </div>
                                 <div class="activity-content">
-                                    <p><strong>Elevo Core Development</strong> - Final Review</p>
-                                    <div class="activity-time">Due: Jun 15, 2023</div>
+                                    <p><strong>Elevo Core Development</strong> project progress updated to 75%</p>
+                                    <div class="activity-time">2 hours ago</div>
                                 </div>
                             </li>
                             <li class="activity-item">
                                 <div class="activity-icon task">
-                                    <i class="fas fa-flag"></i>
+                                    <i class="fas fa-tasks"></i>
                                 </div>
                                 <div class="activity-content">
-                                    <p><strong>E-commerce Platform</strong> - Phase 2 Completion</p>
-                                    <div class="activity-time">Due: Jul 10, 2023</div>
+                                    <p>New task assigned to you in <strong>E-commerce Platform</strong></p>
+                                    <div class="activity-time">5 hours ago</div>
                                 </div>
                             </li>
                         </ul>
                     </div>
                 </div>
-            </div>
 
-            <!-- Analytics Section Content -->
-            <div id="analytics-content" class="section-content">
-                <div class="projects-section">
-                    <h3>Project Analytics</h3>
-                    <div class="stats-container">
-                        <div class="stat-card">
-                            <h3>Productivity Score</h3>
-                            <div class="value">87%</div>
-                            <div class="trend up"><i class="fas fa-arrow-up"></i> 5% from last month</div>
+                <!-- Projects Section Content -->
+                <div id="projects-content" class="section-content">
+                    <div class="projects-section">
+                        <div class="section-header">
+                            <h3>All Projects</h3>
+                            <button class="btn" id="add-project-btn-2"><i class="fas fa-plus"></i> Add Project</button>
                         </div>
-                        <div class="stat-card ongoing">
-                            <h3>Avg. Completion Time</h3>
-                            <div class="value">18 days</div>
-                            <div class="trend down"><i class="fas fa-arrow-down"></i> 2 days faster</div>
-                        </div>
-                        <div class="stat-card completed">
-                            <h3>Team Performance</h3>
-                            <div class="value">92%</div>
-                            <div class="trend up"><i class="fas fa-arrow-up"></i> 3% improvement</div>
-                        </div>
-                    </div>
-                    <div class="charts-container">
-                        <div class="chart-card">
-                            <h3>Performance Trends</h3>
-                            <div class="chart-container">
-                                <canvas id="performanceChart"></canvas>
+                        <div class="stats-container">
+                            <div class="stat-card">
+                                <h3>Active Projects</h3>
+                                <div class="value">8</div>
+                                <div class="trend up"><i class="fas fa-arrow-up"></i> 2 from last week</div>
+                            </div>
+                            <div class="stat-card ongoing">
+                                <h3>Behind Schedule</h3>
+                                <div class="value">3</div>
+                                <div class="trend down"><i class="fas fa-arrow-down"></i> 1 improved</div>
                             </div>
                         </div>
-                        <div class="chart-card">
-                            <h3>Resource Allocation</h3>
+                        <div class="chart-card" style="margin-top: 1.5rem;">
+                            <h3>Project Timeline</h3>
                             <div class="chart-container">
-                                <canvas id="resourceChart"></canvas>
+                                <canvas id="timelineChart"></canvas>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Settings Section Content -->
-            <div id="settings-content" class="section-content">
-                <div class="projects-section">
-                    <h3>Settings</h3>
-                    <div class="form-group">
-                        <label for="user-name">Full Name</label>
-                        <input type="text" id="user-name" class="form-control" value="Mohamed Elmenisy">
-                    </div>
-                    <div class="form-group">
-                        <label for="user-email">Email Address</label>
-                        <input type="email" id="user-email" class="form-control" value="m.elsayed@thechefz.co">
-                    </div>
-                    <div class="form-group">
-                        <label for="user-role">Role</label>
-                        <select id="user-role" class="form-control">
-                            <option>Project Manager</option>
-                            <option>Team Lead</option>
-                            <option>Developer</option>
-                            <option>Designer</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="notifications">Notifications</label>
-                        <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem;">
-                            <label style="display: flex; align-items: center; gap: 0.5rem;">
-                                <input type="checkbox" checked> Email notifications
-                            </label>
-                            <label style="display: flex; align-items: center; gap: 0.5rem;">
-                                <input type="checkbox" checked> Project updates
-                            </label>
-                            <label style="display: flex; align-items: center; gap: 0.5rem;">
-                                <input type="checkbox"> Weekly reports
-                            </label>
+                <!-- Tasks Section Content -->
+                <div id="tasks-content" class="section-content">
+                    <div class="projects-section">
+                        <div class="section-header">
+                            <h3>Task Management</h3>
+                            <button class="btn"><i class="fas fa-plus"></i> Add Task</button>
+                        </div>
+                        <div class="stats-container">
+                            <div class="stat-card">
+                                <h3>Total Tasks</h3>
+                                <div class="value">47</div>
+                                <div class="trend up"><i class="fas fa-arrow-up"></i> 5 new today</div>
+                            </div>
+                            <div class="stat-card completed">
+                                <h3>Completed</h3>
+                                <div class="value">32</div>
+                                <div class="trend up"><i class="fas fa-arrow-up"></i> 68% done</div>
+                            </div>
+                            <div class="stat-card pending">
+                                <h3>Pending</h3>
+                                <div class="value">12</div>
+                                <div class="trend down"><i class="fas fa-arrow-down"></i> 3 completed</div>
+                            </div>
+                            <div class="stat-card delayed">
+                                <h3>Overdue</h3>
+                                <div class="value">3</div>
+                                <div class="trend down"><i class="fas fa-arrow-down"></i> 1 resolved</div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 1.5rem;">
+                            <h4 style="margin-bottom: 1rem;">Task Priority</h4>
+                            <div class="progress-bar" style="margin-bottom: 0.5rem;">
+                                <div class="progress delayed" style="width: 15%"></div>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--gray);">
+                                <span>High Priority: 15%</span>
+                                <span>7 tasks</span>
+                            </div>
+                            
+                            <div class="progress-bar" style="margin: 1rem 0 0.5rem;">
+                                <div class="progress pending" style="width: 45%"></div>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--gray);">
+                                <span>Medium Priority: 45%</span>
+                                <span>21 tasks</span>
+                            </div>
+                            
+                            <div class="progress-bar" style="margin: 1rem 0 0.5rem;">
+                                <div class="progress ongoing" style="width: 40%"></div>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--gray);">
+                                <span>Low Priority: 40%</span>
+                                <span>19 tasks</span>
+                            </div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <button class="btn" style="width: 100%;">Save Settings</button>
+                </div>
+
+                <!-- Calendar Section Content -->
+                <div id="calendar-content" class="section-content">
+                    <div class="projects-section">
+                        <h3>Project Calendar</h3>
+                        <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.5rem; margin-top: 1.5rem;">
+                            <div style="text-align: center; padding: 1rem; background: rgba(99, 102, 241, 0.1); border-radius: var(--border-radius);">
+                                <div style="font-size: 0.85rem; color: var(--gray);">Mon</div>
+                                <div style="font-weight: 600; margin-top: 0.5rem;">12</div>
+                            </div>
+                            <div style="text-align: center; padding: 1rem; background: rgba(99, 102, 241, 0.1); border-radius: var(--border-radius);">
+                                <div style="font-size: 0.85rem; color: var(--gray);">Tue</div>
+                                <div style="font-weight: 600; margin-top: 0.5rem;">13</div>
+                            </div>
+                            <div style="text-align: center; padding: 1rem; background: rgba(16, 185, 129, 0.2); border-radius: var(--border-radius); border: 1px solid rgba(16, 185, 129, 0.3);">
+                                <div style="font-size: 0.85rem; color: var(--success);">Wed</div>
+                                <div style="font-weight: 600; margin-top: 0.5rem;">14</div>
+                                <div style="font-size: 0.7rem; margin-top: 0.5rem; color: var(--success);">Deadline</div>
+                            </div>
+                            <div style="text-align: center; padding: 1rem; background: rgba(99, 102, 241, 0.1); border-radius: var(--border-radius);">
+                                <div style="font-size: 0.85rem; color: var(--gray);">Thu</div>
+                                <div style="font-weight: 600; margin-top: 0.5rem;">15</div>
+                            </div>
+                            <div style="text-align: center; padding: 1rem; background: rgba(99, 102, 241, 0.1); border-radius: var(--border-radius);">
+                                <div style="font-size: 0.85rem; color: var(--gray);">Fri</div>
+                                <div style="font-weight: 600; margin-top: 0.5rem;">16</div>
+                            </div>
+                            <div style="text-align: center; padding: 1rem; background: rgba(99, 102, 241, 0.1); border-radius: var(--border-radius);">
+                                <div style="font-size: 0.85rem; color: var(--gray);">Sat</div>
+                                <div style="font-weight: 600; margin-top: 0.5rem;">17</div>
+                            </div>
+                            <div style="text-align: center; padding: 1rem; background: rgba(99, 102, 241, 0.1); border-radius: var(--border-radius);">
+                                <div style="font-size: 0.85rem; color: var(--gray);">Sun</div>
+                                <div style="font-weight: 600; margin-top: 0.5rem;">18</div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 2rem;">
+                            <h4 style="margin-bottom: 1rem;">Upcoming Deadlines</h4>
+                            <ul class="activity-list">
+                                <li class="activity-item">
+                                    <div class="activity-icon task">
+                                        <i class="fas fa-flag"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <p><strong>Elevo Core Development</strong> - Final Review</p>
+                                        <div class="activity-time">Due: Jun 15, 2023</div>
+                                    </div>
+                                </li>
+                                <li class="activity-item">
+                                    <div class="activity-icon task">
+                                        <i class="fas fa-flag"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <p><strong>E-commerce Platform</strong> - Phase 2 Completion</p>
+                                        <div class="activity-time">Due: Jul 10, 2023</div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Analytics Section Content -->
+                <div id="analytics-content" class="section-content">
+                    <div class="projects-section">
+                        <h3>Project Analytics</h3>
+                        <div class="stats-container">
+                            <div class="stat-card">
+                                <h3>Productivity Score</h3>
+                                <div class="value">87%</div>
+                                <div class="trend up"><i class="fas fa-arrow-up"></i> 5% from last month</div>
+                            </div>
+                            <div class="stat-card ongoing">
+                                <h3>Avg. Completion Time</h3>
+                                <div class="value">18 days</div>
+                                <div class="trend down"><i class="fas fa-arrow-down"></i> 2 days faster</div>
+                            </div>
+                            <div class="stat-card completed">
+                                <h3>Team Performance</h3>
+                                <div class="value">92%</div>
+                                <div class="trend up"><i class="fas fa-arrow-up"></i> 3% improvement</div>
+                            </div>
+                        </div>
+                        <div class="charts-container">
+                            <div class="chart-card">
+                                <h3>Performance Trends</h3>
+                                <div class="chart-container">
+                                    <canvas id="performanceChart"></canvas>
+                                </div>
+                            </div>
+                            <div class="chart-card">
+                                <h3>Resource Allocation</h3>
+                                <div class="chart-container">
+                                    <canvas id="resourceChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings Section Content -->
+                <div id="settings-content" class="section-content">
+                    <div class="projects-section">
+                        <h3>Settings</h3>
+                        <div class="form-group">
+                            <label for="user-name">Full Name</label>
+                            <input type="text" id="user-name" class="form-control" value="Mohamed Elmenisy">
+                        </div>
+                        <div class="form-group">
+                            <label for="user-email">Email Address</label>
+                            <input type="email" id="user-email" class="form-control" value="m.elsayed@thechefz.co">
+                        </div>
+                        <div class="form-group">
+                            <label for="user-role">Role</label>
+                            <select id="user-role" class="form-control">
+                                <option>Project Manager</option>
+                                <option>Team Lead</option>
+                                <option>Developer</option>
+                                <option>Designer</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="notifications">Notifications</label>
+                            <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem;">
+                                <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <input type="checkbox" checked> Email notifications
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <input type="checkbox" checked> Project updates
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <input type="checkbox"> Weekly reports
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn" style="width: 100%;">Save Settings</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1095,6 +1107,7 @@
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false,
                     plugins: {
                         legend: {
                             position: 'top',
@@ -1145,6 +1158,7 @@
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false,
                     plugins: {
                         legend: {
                             position: 'bottom',
@@ -1175,6 +1189,7 @@
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false,
                     plugins: {
                         legend: {
                             labels: {
@@ -1231,6 +1246,7 @@
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false,
                     plugins: {
                         legend: {
                             labels: {
@@ -1281,6 +1297,7 @@
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false,
                     plugins: {
                         legend: {
                             position: 'bottom',
