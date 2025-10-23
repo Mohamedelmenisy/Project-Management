@@ -36,11 +36,14 @@
             color: var(--light);
             line-height: 1.6;
             overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
         .dashboard-container {
             display: flex;
-            min-height: 100vh;
+            flex: 1;
         }
 
         /* Sidebar Styles */
@@ -575,6 +578,75 @@
             font-size: 1.2rem;
         }
 
+        /* Search and Filter Styles */
+        .search-filter-container {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border-radius: var(--border-radius);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--light);
+            transition: var(--transition);
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--light);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .filter-btn.active, .filter-btn:hover {
+            background: rgba(99, 102, 241, 0.2);
+            border-color: var(--primary);
+        }
+
+        /* Footer Styles */
+        .footer {
+            background: var(--darker);
+            color: var(--gray);
+            text-align: center;
+            padding: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: auto;
+        }
+
         /* Responsive Design */
         @media (max-width: 1200px) {
             .charts-container {
@@ -626,6 +698,10 @@
                 display: block;
                 overflow-x: auto;
                 white-space: nowrap;
+            }
+            
+            .search-filter-container {
+                flex-direction: column;
             }
         }
 
@@ -683,23 +759,23 @@
                     <div class="stats-container">
                         <div class="stat-card">
                             <h3>Total Projects</h3>
-                            <div class="value">12</div>
-                            <div class="trend up"><i class="fas fa-arrow-up"></i> 2 new this month</div>
+                            <div class="value">0</div>
+                            <div class="trend">No projects yet</div>
                         </div>
                         <div class="stat-card ongoing">
                             <h3>In Progress</h3>
-                            <div class="value">5</div>
-                            <div class="trend up"><i class="fas fa-arrow-up"></i> 1 started today</div>
+                            <div class="value">0</div>
+                            <div class="trend">No ongoing projects</div>
                         </div>
                         <div class="stat-card completed">
                             <h3>Completed</h3>
-                            <div class="value">4</div>
-                            <div class="trend up"><i class="fas fa-arrow-up"></i> 2 this week</div>
+                            <div class="value">0</div>
+                            <div class="trend">No completed projects</div>
                         </div>
                         <div class="stat-card delayed">
                             <h3>Delayed</h3>
-                            <div class="value">3</div>
-                            <div class="trend down"><i class="fas fa-arrow-down"></i> 1 resolved</div>
+                            <div class="value">0</div>
+                            <div class="trend">No delayed projects</div>
                         </div>
                     </div>
 
@@ -725,6 +801,22 @@
                             <h3>My Projects</h3>
                             <button class="btn" id="add-project-btn"><i class="fas fa-plus"></i> Add Project</button>
                         </div>
+                        
+                        <!-- Search and Filter -->
+                        <div class="search-filter-container">
+                            <div class="search-box">
+                                <i class="fas fa-search"></i>
+                                <input type="text" id="project-search" placeholder="Search projects...">
+                            </div>
+                            <div class="filter-buttons">
+                                <button class="filter-btn active" data-filter="all">All</button>
+                                <button class="filter-btn" data-filter="ongoing">In Progress</button>
+                                <button class="filter-btn" data-filter="completed">Completed</button>
+                                <button class="filter-btn" data-filter="pending">Pending</button>
+                                <button class="filter-btn" data-filter="delayed">Delayed</button>
+                            </div>
+                        </div>
+                        
                         <table class="projects-table">
                             <thead>
                                 <tr>
@@ -736,50 +828,8 @@
                                     <th>Actions</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr>
-                                    <td class="project-name">Elevo Core Development</td>
-                                    <td><span class="status ongoing">In Progress</span></td>
-                                    <td>
-                                        <div class="progress-bar">
-                                            <div class="progress ongoing" style="width: 75%"></div>
-                                        </div>
-                                        <div style="font-size: 0.85rem; margin-top: 0.25rem;">75%</div>
-                                    </td>
-                                    <td>Jun 15, 2023</td>
-                                    <td>
-                                        <div style="display: flex;">
-                                            <div class="user-avatar" style="width: 30px; height: 30px; font-size: 0.8rem; margin-right: 0.5rem;">ME</div>
-                                            <div class="user-avatar" style="width: 30px; height: 30px; font-size: 0.8rem; background: linear-gradient(135deg, var(--secondary), #a78bfa);">AS</div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <button class="action-btn edit-project" data-project="Elevo Core Development"><i class="fas fa-edit"></i></button>
-                                        <button class="action-btn delete-project" data-project="Elevo Core Development"><i class="fas fa-trash"></i></button>
-                                        <button class="action-btn view-analytics" data-project="Elevo Core Development"><i class="fas fa-chart-line"></i></button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="project-name">Mobile App UI/UX</td>
-                                    <td><span class="status completed">Completed</span></td>
-                                    <td>
-                                        <div class="progress-bar">
-                                            <div class="progress completed" style="width: 100%"></div>
-                                        </div>
-                                        <div style="font-size: 0.85rem; margin-top: 0.25rem;">100%</div>
-                                    </td>
-                                    <td>May 28, 2023</td>
-                                    <td>
-                                        <div style="display: flex;">
-                                            <div class="user-avatar" style="width: 30px; height: 30px; font-size: 0.8rem; margin-right: 0.5rem; background: linear-gradient(135deg, var(--warning), #fbbf24);">JD</div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <button class="action-btn edit-project" data-project="Mobile App UI/UX"><i class="fas fa-edit"></i></button>
-                                        <button class="action-btn delete-project" data-project="Mobile App UI/UX"><i class="fas fa-trash"></i></button>
-                                        <button class="action-btn view-analytics" data-project="Mobile App UI/UX"><i class="fas fa-chart-line"></i></button>
-                                    </td>
-                                </tr>
+                            <tbody id="projects-table-body">
+                                <!-- Projects will be added dynamically -->
                             </tbody>
                         </table>
                     </div>
@@ -789,25 +839,8 @@
                         <div class="section-header">
                             <h3>Recent Activity</h3>
                         </div>
-                        <ul class="activity-list">
-                            <li class="activity-item">
-                                <div class="activity-icon project">
-                                    <i class="fas fa-project-diagram"></i>
-                                </div>
-                                <div class="activity-content">
-                                    <p><strong>Elevo Core Development</strong> project progress updated to 75%</p>
-                                    <div class="activity-time">2 hours ago</div>
-                                </div>
-                            </li>
-                            <li class="activity-item">
-                                <div class="activity-icon task">
-                                    <i class="fas fa-tasks"></i>
-                                </div>
-                                <div class="activity-content">
-                                    <p>New task assigned to you in <strong>E-commerce Platform</strong></p>
-                                    <div class="activity-time">5 hours ago</div>
-                                </div>
-                            </li>
+                        <ul class="activity-list" id="activity-list">
+                            <!-- Activities will be added dynamically -->
                         </ul>
                     </div>
                 </div>
@@ -819,16 +852,32 @@
                             <h3>All Projects</h3>
                             <button class="btn" id="add-project-btn-2"><i class="fas fa-plus"></i> Add Project</button>
                         </div>
+                        
+                        <!-- Search and Filter -->
+                        <div class="search-filter-container">
+                            <div class="search-box">
+                                <i class="fas fa-search"></i>
+                                <input type="text" id="project-search-2" placeholder="Search projects...">
+                            </div>
+                            <div class="filter-buttons">
+                                <button class="filter-btn active" data-filter="all">All</button>
+                                <button class="filter-btn" data-filter="ongoing">In Progress</button>
+                                <button class="filter-btn" data-filter="completed">Completed</button>
+                                <button class="filter-btn" data-filter="pending">Pending</button>
+                                <button class="filter-btn" data-filter="delayed">Delayed</button>
+                            </div>
+                        </div>
+                        
                         <div class="stats-container">
                             <div class="stat-card">
                                 <h3>Active Projects</h3>
-                                <div class="value">8</div>
-                                <div class="trend up"><i class="fas fa-arrow-up"></i> 2 from last week</div>
+                                <div class="value">0</div>
+                                <div class="trend">No active projects</div>
                             </div>
                             <div class="stat-card ongoing">
                                 <h3>Behind Schedule</h3>
-                                <div class="value">3</div>
-                                <div class="trend down"><i class="fas fa-arrow-down"></i> 1 improved</div>
+                                <div class="value">0</div>
+                                <div class="trend">No projects behind schedule</div>
                             </div>
                         </div>
                         <div class="chart-card" style="margin-top: 1.5rem;">
@@ -845,54 +894,54 @@
                     <div class="projects-section">
                         <div class="section-header">
                             <h3>Task Management</h3>
-                            <button class="btn"><i class="fas fa-plus"></i> Add Task</button>
+                            <button class="btn" id="add-task-btn"><i class="fas fa-plus"></i> Add Task</button>
                         </div>
                         <div class="stats-container">
                             <div class="stat-card">
                                 <h3>Total Tasks</h3>
-                                <div class="value">47</div>
-                                <div class="trend up"><i class="fas fa-arrow-up"></i> 5 new today</div>
+                                <div class="value">0</div>
+                                <div class="trend">No tasks yet</div>
                             </div>
                             <div class="stat-card completed">
                                 <h3>Completed</h3>
-                                <div class="value">32</div>
-                                <div class="trend up"><i class="fas fa-arrow-up"></i> 68% done</div>
+                                <div class="value">0</div>
+                                <div class="trend">No completed tasks</div>
                             </div>
                             <div class="stat-card pending">
                                 <h3>Pending</h3>
-                                <div class="value">12</div>
-                                <div class="trend down"><i class="fas fa-arrow-down"></i> 3 completed</div>
+                                <div class="value">0</div>
+                                <div class="trend">No pending tasks</div>
                             </div>
                             <div class="stat-card delayed">
                                 <h3>Overdue</h3>
-                                <div class="value">3</div>
-                                <div class="trend down"><i class="fas fa-arrow-down"></i> 1 resolved</div>
+                                <div class="value">0</div>
+                                <div class="trend">No overdue tasks</div>
                             </div>
                         </div>
                         <div style="margin-top: 1.5rem;">
                             <h4 style="margin-bottom: 1rem;">Task Priority</h4>
                             <div class="progress-bar" style="margin-bottom: 0.5rem;">
-                                <div class="progress delayed" style="width: 15%"></div>
+                                <div class="progress delayed" style="width: 0%"></div>
                             </div>
                             <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--gray);">
-                                <span>High Priority: 15%</span>
-                                <span>7 tasks</span>
+                                <span>High Priority: 0%</span>
+                                <span>0 tasks</span>
                             </div>
                             
                             <div class="progress-bar" style="margin: 1rem 0 0.5rem;">
-                                <div class="progress pending" style="width: 45%"></div>
+                                <div class="progress pending" style="width: 0%"></div>
                             </div>
                             <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--gray);">
-                                <span>Medium Priority: 45%</span>
-                                <span>21 tasks</span>
+                                <span>Medium Priority: 0%</span>
+                                <span>0 tasks</span>
                             </div>
                             
                             <div class="progress-bar" style="margin: 1rem 0 0.5rem;">
-                                <div class="progress ongoing" style="width: 40%"></div>
+                                <div class="progress ongoing" style="width: 0%"></div>
                             </div>
                             <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--gray);">
-                                <span>Low Priority: 40%</span>
-                                <span>19 tasks</span>
+                                <span>Low Priority: 0%</span>
+                                <span>0 tasks</span>
                             </div>
                         </div>
                     </div>
@@ -935,25 +984,8 @@
                         </div>
                         <div style="margin-top: 2rem;">
                             <h4 style="margin-bottom: 1rem;">Upcoming Deadlines</h4>
-                            <ul class="activity-list">
-                                <li class="activity-item">
-                                    <div class="activity-icon task">
-                                        <i class="fas fa-flag"></i>
-                                    </div>
-                                    <div class="activity-content">
-                                        <p><strong>Elevo Core Development</strong> - Final Review</p>
-                                        <div class="activity-time">Due: Jun 15, 2023</div>
-                                    </div>
-                                </li>
-                                <li class="activity-item">
-                                    <div class="activity-icon task">
-                                        <i class="fas fa-flag"></i>
-                                    </div>
-                                    <div class="activity-content">
-                                        <p><strong>E-commerce Platform</strong> - Phase 2 Completion</p>
-                                        <div class="activity-time">Due: Jul 10, 2023</div>
-                                    </div>
-                                </li>
+                            <ul class="activity-list" id="calendar-deadlines">
+                                <!-- Calendar deadlines will be added dynamically -->
                             </ul>
                         </div>
                     </div>
@@ -966,18 +998,18 @@
                         <div class="stats-container">
                             <div class="stat-card">
                                 <h3>Productivity Score</h3>
-                                <div class="value">87%</div>
-                                <div class="trend up"><i class="fas fa-arrow-up"></i> 5% from last month</div>
+                                <div class="value">0%</div>
+                                <div class="trend">No data available</div>
                             </div>
                             <div class="stat-card ongoing">
                                 <h3>Avg. Completion Time</h3>
-                                <div class="value">18 days</div>
-                                <div class="trend down"><i class="fas fa-arrow-down"></i> 2 days faster</div>
+                                <div class="value">0 days</div>
+                                <div class="trend">No data available</div>
                             </div>
                             <div class="stat-card completed">
                                 <h3>Team Performance</h3>
-                                <div class="value">92%</div>
-                                <div class="trend up"><i class="fas fa-arrow-up"></i> 3% improvement</div>
+                                <div class="value">0%</div>
+                                <div class="trend">No data available</div>
                             </div>
                         </div>
                         <div class="charts-container">
@@ -1041,6 +1073,11 @@
         </div>
     </div>
 
+    <!-- Footer -->
+    <div class="footer">
+        © 2025 Mohamed Elmenisy. All rights reserved.
+    </div>
+
     <!-- Add Project Modal -->
     <div class="modal" id="project-modal">
         <div class="modal-content">
@@ -1095,12 +1132,12 @@
                     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
                     datasets: [{
                         label: 'Completed Projects',
-                        data: [2, 3, 1, 4, 3, 2],
+                        data: [0, 0, 0, 0, 0, 0],
                         backgroundColor: '#6366f1',
                         borderRadius: 6
                     }, {
                         label: 'In Progress',
-                        data: [3, 2, 4, 2, 3, 5],
+                        data: [0, 0, 0, 0, 0, 0],
                         backgroundColor: '#10b981',
                         borderRadius: 6
                     }]
@@ -1146,7 +1183,7 @@
                 data: {
                     labels: ['Completed', 'In Progress', 'Pending', 'Delayed'],
                     datasets: [{
-                        data: [35, 25, 20, 20],
+                        data: [0, 0, 0, 0],
                         backgroundColor: [
                             '#8b5cf6',
                             '#10b981',
@@ -1179,7 +1216,7 @@
                     labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6'],
                     datasets: [{
                         label: 'Project Progress',
-                        data: [10, 25, 40, 55, 70, 85],
+                        data: [0, 0, 0, 0, 0, 0],
                         borderColor: '#6366f1',
                         backgroundColor: 'rgba(99, 102, 241, 0.1)',
                         borderWidth: 2,
@@ -1228,7 +1265,7 @@
                     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
                     datasets: [{
                         label: 'Team Performance',
-                        data: [75, 78, 82, 80, 85, 87],
+                        data: [0, 0, 0, 0, 0, 0],
                         borderColor: '#10b981',
                         backgroundColor: 'rgba(16, 185, 129, 0.1)',
                         borderWidth: 2,
@@ -1236,7 +1273,7 @@
                         tension: 0.4
                     }, {
                         label: 'Productivity',
-                        data: [70, 72, 75, 78, 82, 85],
+                        data: [0, 0, 0, 0, 0, 0],
                         borderColor: '#6366f1',
                         backgroundColor: 'rgba(99, 102, 241, 0.1)',
                         borderWidth: 2,
@@ -1284,7 +1321,7 @@
                 data: {
                     labels: ['Development', 'Design', 'Testing', 'Documentation', 'Management'],
                     datasets: [{
-                        data: [35, 20, 15, 10, 20],
+                        data: [0, 0, 0, 0, 0],
                         backgroundColor: [
                             '#6366f1',
                             '#10b981',
@@ -1308,6 +1345,12 @@
                     }
                 }
             });
+
+            // Data Management
+            let projects = [];
+            let activities = [];
+            let currentFilter = 'all';
+            let currentProjectId = null;
 
             // Sidebar Navigation
             const sidebarLinks = document.querySelectorAll('.sidebar-menu a');
@@ -1359,6 +1402,7 @@
                     modal.style.display = 'flex';
                     modalTitle.textContent = 'Add New Project';
                     projectForm.reset();
+                    currentProjectId = null;
                 });
             });
 
@@ -1383,46 +1427,337 @@
                 const projectProgress = document.getElementById('project-progress').value;
                 const projectDue = document.getElementById('project-due').value;
                 
-                // In a real app, you would send this data to a server
-                console.log('New Project:', {
-                    name: projectName,
-                    status: projectStatus,
-                    progress: projectProgress,
-                    due: projectDue
-                });
+                if (currentProjectId) {
+                    // Edit existing project
+                    const projectIndex = projects.findIndex(p => p.id === currentProjectId);
+                    if (projectIndex !== -1) {
+                        projects[projectIndex].name = projectName;
+                        projects[projectIndex].status = projectStatus;
+                        projects[projectIndex].progress = projectProgress;
+                        projects[projectIndex].due = projectDue;
+                        
+                        // Add activity
+                        addActivity(`Project "${projectName}" has been updated`);
+                        
+                        showToast(`Project "${projectName}" has been updated successfully!`);
+                    }
+                } else {
+                    // Add new project
+                    const newProject = {
+                        id: Date.now(),
+                        name: projectName,
+                        status: projectStatus,
+                        progress: projectProgress,
+                        due: projectDue
+                    };
+                    
+                    projects.push(newProject);
+                    
+                    // Add activity
+                    addActivity(`New project "${projectName}" has been created`);
+                    
+                    showToast(`Project "${projectName}" has been added successfully!`);
+                }
                 
-                // Show success message
-                showToast(`Project "${projectName}" has been added successfully!`);
+                // Update UI
+                updateProjectsTable();
+                updateStats();
+                updateCharts();
                 
                 // Close modal
                 modal.style.display = 'none';
             });
 
-            // Project action buttons
-            const editButtons = document.querySelectorAll('.edit-project');
-            const deleteButtons = document.querySelectorAll('.delete-project');
-            const analyticsButtons = document.querySelectorAll('.view-analytics');
-
-            editButtons.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const projectName = this.getAttribute('data-project');
-                    showToast(`Editing project: ${projectName}`);
+            // Search functionality
+            const searchInputs = document.querySelectorAll('#project-search, #project-search-2');
+            searchInputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    updateProjectsTable();
                 });
             });
 
-            deleteButtons.forEach(btn => {
+            // Filter functionality
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            filterButtons.forEach(btn => {
                 btn.addEventListener('click', function() {
-                    const projectName = this.getAttribute('data-project');
-                    showToast(`Project "${projectName}" has been deleted.`);
+                    // Remove active class from all buttons
+                    filterButtons.forEach(b => b.classList.remove('active'));
+                    
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    
+                    // Set current filter
+                    currentFilter = this.getAttribute('data-filter');
+                    
+                    // Update projects table
+                    updateProjectsTable();
                 });
             });
 
-            analyticsButtons.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const projectName = this.getAttribute('data-project');
-                    showToast(`Showing analytics for: ${projectName}`);
+            // Update projects table
+            function updateProjectsTable() {
+                const tableBody = document.getElementById('projects-table-body');
+                const searchTerm = document.getElementById('project-search').value.toLowerCase();
+                
+                // Clear table
+                tableBody.innerHTML = '';
+                
+                // Filter projects
+                let filteredProjects = projects.filter(project => {
+                    const matchesSearch = project.name.toLowerCase().includes(searchTerm);
+                    const matchesFilter = currentFilter === 'all' || project.status === currentFilter;
+                    return matchesSearch && matchesFilter;
                 });
-            });
+                
+                // Add projects to table
+                filteredProjects.forEach(project => {
+                    const row = document.createElement('tr');
+                    
+                    // Format due date
+                    const dueDate = new Date(project.due);
+                    const formattedDate = dueDate.toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric'
+                    });
+                    
+                    row.innerHTML = `
+                        <td class="project-name">${project.name}</td>
+                        <td><span class="status ${project.status}">${getStatusText(project.status)}</span></td>
+                        <td>
+                            <div class="progress-bar">
+                                <div class="progress ${project.status}" style="width: ${project.progress}%"></div>
+                            </div>
+                            <div style="font-size: 0.85rem; margin-top: 0.25rem;">${project.progress}%</div>
+                        </td>
+                        <td>${formattedDate}</td>
+                        <td>
+                            <div style="display: flex;">
+                                <div class="user-avatar" style="width: 30px; height: 30px; font-size: 0.8rem; margin-right: 0.5rem;">ME</div>
+                            </div>
+                        </td>
+                        <td>
+                            <button class="action-btn edit-project" data-id="${project.id}"><i class="fas fa-edit"></i></button>
+                            <button class="action-btn delete-project" data-id="${project.id}"><i class="fas fa-trash"></i></button>
+                            <button class="action-btn view-analytics" data-id="${project.id}"><i class="fas fa-chart-line"></i></button>
+                        </td>
+                    `;
+                    
+                    tableBody.appendChild(row);
+                });
+                
+                // Add event listeners to action buttons
+                document.querySelectorAll('.edit-project').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const projectId = parseInt(this.getAttribute('data-id'));
+                        editProject(projectId);
+                    });
+                });
+                
+                document.querySelectorAll('.delete-project').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const projectId = parseInt(this.getAttribute('data-id'));
+                        deleteProject(projectId);
+                    });
+                });
+                
+                document.querySelectorAll('.view-analytics').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const projectId = parseInt(this.getAttribute('data-id'));
+                        viewProjectAnalytics(projectId);
+                    });
+                });
+            }
+
+            // Update stats
+            function updateStats() {
+                const totalProjects = projects.length;
+                const ongoingProjects = projects.filter(p => p.status === 'ongoing').length;
+                const completedProjects = projects.filter(p => p.status === 'completed').length;
+                const delayedProjects = projects.filter(p => p.status === 'delayed').length;
+                
+                // Update dashboard stats
+                document.querySelector('.stat-card .value').textContent = totalProjects;
+                document.querySelector('.stat-card.ongoing .value').textContent = ongoingProjects;
+                document.querySelector('.stat-card.completed .value').textContent = completedProjects;
+                document.querySelector('.stat-card.delayed .value').textContent = delayedProjects;
+                
+                // Update projects section stats
+                document.querySelector('#projects-content .stat-card .value').textContent = ongoingProjects;
+                document.querySelector('#projects-content .stat-card.ongoing .value').textContent = delayedProjects;
+                
+                // Update trend texts
+                document.querySelector('.stat-card .trend').textContent = totalProjects > 0 ? `${totalProjects} total projects` : 'No projects yet';
+                document.querySelector('.stat-card.ongoing .trend').textContent = ongoingProjects > 0 ? `${ongoingProjects} in progress` : 'No ongoing projects';
+                document.querySelector('.stat-card.completed .trend').textContent = completedProjects > 0 ? `${completedProjects} completed` : 'No completed projects';
+                document.querySelector('.stat-card.delayed .trend').textContent = delayedProjects > 0 ? `${delayedProjects} delayed` : 'No delayed projects';
+                
+                document.querySelector('#projects-content .stat-card .trend').textContent = ongoingProjects > 0 ? `${ongoingProjects} active projects` : 'No active projects';
+                document.querySelector('#projects-content .stat-card.ongoing .trend').textContent = delayedProjects > 0 ? `${delayedProjects} behind schedule` : 'No projects behind schedule';
+            }
+
+            // Update charts
+            function updateCharts() {
+                // Update progress chart
+                const ongoingCount = projects.filter(p => p.status === 'ongoing').length;
+                const completedCount = projects.filter(p => p.status === 'completed').length;
+                
+                progressChart.data.datasets[0].data = [0, 0, 0, completedCount, 0, 0];
+                progressChart.data.datasets[1].data = [0, 0, 0, ongoingCount, 0, 0];
+                progressChart.update();
+                
+                // Update task distribution chart
+                taskChart.data.datasets[0].data = [
+                    projects.filter(p => p.status === 'completed').length,
+                    projects.filter(p => p.status === 'ongoing').length,
+                    projects.filter(p => p.status === 'pending').length,
+                    projects.filter(p => p.status === 'delayed').length
+                ];
+                taskChart.update();
+                
+                // Update timeline chart
+                if (projects.length > 0) {
+                    const avgProgress = projects.reduce((sum, p) => sum + parseInt(p.progress), 0) / projects.length;
+                    timelineChart.data.datasets[0].data = [10, 25, 40, 55, 70, avgProgress];
+                } else {
+                    timelineChart.data.datasets[0].data = [0, 0, 0, 0, 0, 0];
+                }
+                timelineChart.update();
+                
+                // Update performance chart
+                if (projects.length > 0) {
+                    const completedPercentage = (projects.filter(p => p.status === 'completed').length / projects.length) * 100;
+                    performanceChart.data.datasets[0].data = [70, 72, 75, 78, 82, completedPercentage];
+                    performanceChart.data.datasets[1].data = [65, 68, 70, 72, 75, completedPercentage - 5];
+                } else {
+                    performanceChart.data.datasets[0].data = [0, 0, 0, 0, 0, 0];
+                    performanceChart.data.datasets[1].data = [0, 0, 0, 0, 0, 0];
+                }
+                performanceChart.update();
+                
+                // Update resource chart
+                if (projects.length > 0) {
+                    resourceChart.data.datasets[0].data = [35, 20, 15, 10, 20];
+                } else {
+                    resourceChart.data.datasets[0].data = [0, 0, 0, 0, 0];
+                }
+                resourceChart.update();
+            }
+
+            // Add activity
+            function addActivity(message) {
+                const activity = {
+                    id: Date.now(),
+                    message: message,
+                    time: new Date().toLocaleTimeString('en-US', { 
+                        hour: '2-digit', 
+                        minute: '2-digit',
+                        hour12: true 
+                    })
+                };
+                
+                activities.unshift(activity);
+                
+                // Keep only the last 5 activities
+                if (activities.length > 5) {
+                    activities = activities.slice(0, 5);
+                }
+                
+                updateActivityList();
+            }
+
+            // Update activity list
+            function updateActivityList() {
+                const activityList = document.getElementById('activity-list');
+                
+                // Clear activity list
+                activityList.innerHTML = '';
+                
+                // Add activities
+                activities.forEach(activity => {
+                    const item = document.createElement('li');
+                    item.className = 'activity-item';
+                    
+                    item.innerHTML = `
+                        <div class="activity-icon project">
+                            <i class="fas fa-project-diagram"></i>
+                        </div>
+                        <div class="activity-content">
+                            <p>${activity.message}</p>
+                            <div class="activity-time">${activity.time}</div>
+                        </div>
+                    `;
+                    
+                    activityList.appendChild(item);
+                });
+            }
+
+            // Edit project
+            function editProject(projectId) {
+                const project = projects.find(p => p.id === projectId);
+                
+                if (project) {
+                    modal.style.display = 'flex';
+                    modalTitle.textContent = 'Edit Project';
+                    
+                    document.getElementById('project-name').value = project.name;
+                    document.getElementById('project-status').value = project.status;
+                    document.getElementById('project-progress').value = project.progress;
+                    document.getElementById('project-due').value = project.due;
+                    
+                    currentProjectId = projectId;
+                }
+            }
+
+            // Delete project
+            function deleteProject(projectId) {
+                const project = projects.find(p => p.id === projectId);
+                
+                if (project && confirm(`Are you sure you want to delete "${project.name}"?`)) {
+                    projects = projects.filter(p => p.id !== projectId);
+                    
+                    // Add activity
+                    addActivity(`Project "${project.name}" has been deleted`);
+                    
+                    showToast(`Project "${project.name}" has been deleted successfully!`);
+                    
+                    // Update UI
+                    updateProjectsTable();
+                    updateStats();
+                    updateCharts();
+                }
+            }
+
+            // View project analytics
+            function viewProjectAnalytics(projectId) {
+                const project = projects.find(p => p.id === projectId);
+                
+                if (project) {
+                    showToast(`Showing analytics for: ${project.name}`);
+                    
+                    // Switch to analytics section
+                    sidebarLinks.forEach(l => l.classList.remove('active'));
+                    document.querySelector('[data-section="analytics"]').classList.add('active');
+                    
+                    sectionContents.forEach(section => {
+                        section.classList.remove('active');
+                    });
+                    
+                    document.getElementById('analytics-content').classList.add('active');
+                    sectionTitle.textContent = 'Analytics';
+                }
+            }
+
+            // Get status text
+            function getStatusText(status) {
+                switch(status) {
+                    case 'ongoing': return 'In Progress';
+                    case 'completed': return 'Completed';
+                    case 'pending': return 'Pending';
+                    case 'delayed': return 'Delayed';
+                    default: return status;
+                }
+            }
 
             // Toast notification function
             function showToast(message) {
@@ -1433,6 +1768,12 @@
                     toast.classList.remove('show');
                 }, 3000);
             }
+
+            // Initialize
+            updateProjectsTable();
+            updateStats();
+            updateCharts();
+            updateActivityList();
         });
     </script>
 </body>
