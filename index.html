@@ -1153,22 +1153,45 @@
     </div>
 
     <script>
-        // Initialize Charts
         document.addEventListener('DOMContentLoaded', function() {
+            // Helper function to get the names of the last N months
+            function getLastNMonths(n) {
+                const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                const today = new Date();
+                const months = [];
+                for (let i = n - 1; i >= 0; i--) {
+                    const d = new Date(today.getFullYear(), today.getMonth() - i, 1);
+                    months.push(monthNames[d.getMonth()]);
+                }
+                return months;
+            }
+
+            // Helper function to get relative labels for the last N weeks
+            function getRelativeWeekLabels(n) {
+                const labels = [];
+                for (let i = n - 1; i > 0; i--) {
+                    labels.push(`${i} weeks ago`);
+                }
+                labels.push('Last week');
+                labels.push('This week');
+                return labels;
+            }
+
+            // Initialize Charts
             // Progress Chart
             const progressCtx = document.getElementById('progressChart').getContext('2d');
             const progressChart = new Chart(progressCtx, {
                 type: 'bar',
                 data: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    labels: getLastNMonths(6),
                     datasets: [{
                         label: 'Completed Projects',
-                        data: [0, 0, 0, 0, 0, 0],
+                        data: [],
                         backgroundColor: '#6366f1',
                         borderRadius: 6
                     }, {
                         label: 'In Progress',
-                        data: [0, 0, 0, 0, 0, 0],
+                        data: [],
                         backgroundColor: '#10b981',
                         borderRadius: 6
                     }]
@@ -1244,10 +1267,10 @@
             const timelineChart = new Chart(timelineCtx, {
                 type: 'line',
                 data: {
-                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6'],
+                    labels: getRelativeWeekLabels(6),
                     datasets: [{
-                        label: 'Project Progress',
-                        data: [0, 0, 0, 0, 0, 0],
+                        label: 'Average Project Progress',
+                        data: [],
                         borderColor: '#6366f1',
                         backgroundColor: 'rgba(99, 102, 241, 0.1)',
                         borderWidth: 2,
@@ -1378,7 +1401,12 @@
             });
 
             // Data Management
-            let projects = [];
+            let projects = [
+                {id: 1, name: "Initial Design Mockup", status: "completed", progress: "100", due: "2025-09-15", creationDate: new Date("2025-08-10")},
+                {id: 2, name: "Backend API Development", status: "completed", progress: "100", due: "2025-10-20", creationDate: new Date("2025-09-25")},
+                {id: 3, name: "Frontend Implementation", status: "ongoing", progress: "45", due: "2025-11-05", creationDate: new Date("2025-10-05")},
+                {id: 4, name: "User Testing Phase", status: "pending", progress: "0", due: "2025-11-15", creationDate: new Date("2025-10-20")}
+            ];
             let activities = [];
             let currentFilter = 'all';
             let currentProjectId = null;
@@ -1391,29 +1419,13 @@
             sidebarLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
                     e.preventDefault();
-                    
-                    // Remove active class from all links
                     sidebarLinks.forEach(l => l.classList.remove('active'));
-                    
-                    // Add active class to clicked link
                     this.classList.add('active');
-                    
-                    // Get the target section
                     const targetSection = this.getAttribute('data-section');
-                    
-                    // Hide all sections
-                    sectionContents.forEach(section => {
-                        section.classList.remove('active');
-                    });
-                    
-                    // Show target section
+                    sectionContents.forEach(section => section.classList.remove('active'));
                     document.getElementById(`${targetSection}-content`).classList.add('active');
-                    
-                    // Update section title
                     const sectionName = this.querySelector('span').textContent;
                     sectionTitle.textContent = sectionName;
-                    
-                    // Show toast notification
                     showToast(`Switched to ${sectionName} section`);
                 });
             });
@@ -1421,14 +1433,13 @@
             // Modal functionality
             const modal = document.getElementById('project-modal');
             const addProjectBtns = document.querySelectorAll('#add-project-btn, #add-project-btn-2');
-            const addTaskBtn = document.getElementById('add-task-btn'); // Get the Add Task button
+            const addTaskBtn = document.getElementById('add-task-btn');
             const closeModalBtn = document.querySelector('.close-modal');
             const projectForm = document.getElementById('project-form');
             const modalTitle = document.getElementById('modal-title');
             const toast = document.getElementById('toast');
             const toastMessage = document.getElementById('toast-message');
 
-            // Open modal for adding project
             addProjectBtns.forEach(btn => {
                 btn.addEventListener('click', function() {
                     modal.style.display = 'flex';
@@ -1438,29 +1449,19 @@
                 });
             });
 
-            // Open modal for adding task (currently reuses project modal)
             addTaskBtn.addEventListener('click', function() {
                 modal.style.display = 'flex';
-                modalTitle.textContent = 'Add New Task'; // You might want a dedicated task modal later
+                modalTitle.textContent = 'Add New Task';
                 projectForm.reset();
-                currentProjectId = null; // Reset for a new entry
+                currentProjectId = null;
                 showToast('Add Task functionality is pending a dedicated modal.');
             });
 
-
-            // Close modal
-            closeModalBtn.addEventListener('click', function() {
-                modal.style.display = 'none';
+            closeModalBtn.addEventListener('click', () => modal.style.display = 'none');
+            window.addEventListener('click', e => {
+                if (e.target === modal) modal.style.display = 'none';
             });
 
-            // Close modal when clicking outside
-            window.addEventListener('click', function(e) {
-                if (e.target === modal) {
-                    modal.style.display = 'none';
-                }
-            });
-
-            // Handle form submission
             projectForm.addEventListener('submit', function(e) {
                 e.preventDefault();
                 
@@ -1470,98 +1471,60 @@
                 const projectDue = document.getElementById('project-due').value;
                 
                 if (currentProjectId) {
-                    // Edit existing project
                     const projectIndex = projects.findIndex(p => p.id === currentProjectId);
                     if (projectIndex !== -1) {
-                        projects[projectIndex].name = projectName;
-                        projects[projectIndex].status = projectStatus;
-                        projects[projectIndex].progress = projectProgress;
-                        projects[projectIndex].due = projectDue;
-                        
-                        // Add activity
+                        projects[projectIndex] = {...projects[projectIndex], name: projectName, status: projectStatus, progress: projectProgress, due: projectDue};
                         addActivity(`Project "${projectName}" has been updated`);
-                        
-                        showToast(`Project "${projectName}" has been updated successfully!`);
+                        showToast(`Project "${projectName}" updated successfully!`);
                     }
                 } else {
-                    // Add new project
                     const newProject = {
                         id: Date.now(),
                         name: projectName,
                         status: projectStatus,
                         progress: projectProgress,
-                        due: projectDue
+                        due: projectDue,
+                        creationDate: new Date()
                     };
-                    
                     projects.push(newProject);
-                    
-                    // Add activity
                     addActivity(`New project "${projectName}" has been created`);
-                    
-                    showToast(`Project "${projectName}" has been added successfully!`);
+                    showToast(`Project "${projectName}" added successfully!`);
                 }
                 
-                // Update UI
                 updateProjectsTable();
                 updateStats();
                 updateCharts();
-                
-                // Close modal
                 modal.style.display = 'none';
             });
 
-            // Search functionality
             const searchInputs = document.querySelectorAll('#project-search, #project-search-2');
-            searchInputs.forEach(input => {
-                input.addEventListener('input', function() {
-                    updateProjectsTable();
-                });
-            });
+            searchInputs.forEach(input => input.addEventListener('input', updateProjectsTable));
 
-            // Filter functionality
             const filterButtons = document.querySelectorAll('.filter-btn');
             filterButtons.forEach(btn => {
                 btn.addEventListener('click', function() {
-                    // Remove active class from all buttons
                     filterButtons.forEach(b => b.classList.remove('active'));
-                    
-                    // Add active class to clicked button
                     this.classList.add('active');
-                    
-                    // Set current filter
                     currentFilter = this.getAttribute('data-filter');
-                    
-                    // Update projects table
                     updateProjectsTable();
                 });
             });
 
-            // Update projects table
             function updateProjectsTable() {
                 const tableBody = document.getElementById('projects-table-body');
                 const searchTerm = document.getElementById('project-search').value.toLowerCase();
-                
-                // Clear table
                 tableBody.innerHTML = '';
                 
-                // Filter projects
-                let filteredProjects = projects.filter(project => {
+                const filteredProjects = projects.filter(project => {
                     const matchesSearch = project.name.toLowerCase().includes(searchTerm);
                     const matchesFilter = currentFilter === 'all' || project.status === currentFilter;
                     return matchesSearch && matchesFilter;
                 });
                 
-                // Add projects to table
                 filteredProjects.forEach(project => {
                     const row = document.createElement('tr');
-                    
-                    // Format due date
                     const dueDate = new Date(project.due);
-                    const formattedDate = dueDate.toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'short',
-                        day: 'numeric'
-                    });
+                    const formattedDate = dueDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
                     
                     row.innerHTML = `
                         <td class="project-name">${project.name}</td>
@@ -1584,71 +1547,52 @@
                             <button class="action-btn view-analytics" data-id="${project.id}"><i class="fas fa-chart-line"></i></button>
                         </td>
                     `;
-                    
                     tableBody.appendChild(row);
                 });
                 
-                // Add event listeners to action buttons
-                document.querySelectorAll('.edit-project').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const projectId = parseInt(this.getAttribute('data-id'));
-                        editProject(projectId);
-                    });
-                });
-                
-                document.querySelectorAll('.delete-project').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const projectId = parseInt(this.getAttribute('data-id'));
-                        deleteProject(projectId);
-                    });
-                });
-                
-                document.querySelectorAll('.view-analytics').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const projectId = parseInt(this.getAttribute('data-id'));
-                        viewProjectAnalytics(projectId);
-                    });
-                });
+                attachActionListeners();
             }
 
-            // Update stats
+            function attachActionListeners() {
+                document.querySelectorAll('.edit-project').forEach(btn => btn.addEventListener('click', e => editProject(parseInt(e.currentTarget.getAttribute('data-id')))));
+                document.querySelectorAll('.delete-project').forEach(btn => btn.addEventListener('click', e => deleteProject(parseInt(e.currentTarget.getAttribute('data-id')))));
+                document.querySelectorAll('.view-analytics').forEach(btn => btn.addEventListener('click', e => viewProjectAnalytics(parseInt(e.currentTarget.getAttribute('data-id')))));
+            }
+
             function updateStats() {
                 const totalProjects = projects.length;
                 const ongoingProjects = projects.filter(p => p.status === 'ongoing').length;
                 const completedProjects = projects.filter(p => p.status === 'completed').length;
                 const delayedProjects = projects.filter(p => p.status === 'delayed').length;
                 
-                // Update dashboard stats
-                document.querySelector('.stat-card .value').textContent = totalProjects;
-                document.querySelector('.stat-card.ongoing .value').textContent = ongoingProjects;
-                document.querySelector('.stat-card.completed .value').textContent = completedProjects;
-                document.querySelector('.stat-card.delayed .value').textContent = delayedProjects;
+                document.querySelector('#dashboard-content .stat-card:nth-child(1) .value').textContent = totalProjects;
+                document.querySelector('#dashboard-content .stat-card.ongoing .value').textContent = ongoingProjects;
+                document.querySelector('#dashboard-content .stat-card.completed .value').textContent = completedProjects;
+                document.querySelector('#dashboard-content .stat-card.delayed .value').textContent = delayedProjects;
                 
-                // Update projects section stats
-                document.querySelector('#projects-content .stat-card .value').textContent = ongoingProjects;
+                document.querySelector('#projects-content .stat-card:nth-child(1) .value').textContent = ongoingProjects;
                 document.querySelector('#projects-content .stat-card.ongoing .value').textContent = delayedProjects;
-                
-                // Update trend texts
-                document.querySelector('.stat-card .trend').textContent = totalProjects > 0 ? `${totalProjects} total projects` : 'No projects yet';
-                document.querySelector('.stat-card.ongoing .trend').textContent = ongoingProjects > 0 ? `${ongoingProjects} in progress` : 'No ongoing projects';
-                document.querySelector('.stat-card.completed .trend').textContent = completedProjects > 0 ? `${completedProjects} completed` : 'No completed projects';
-                document.querySelector('.stat-card.delayed .trend').textContent = delayedProjects > 0 ? `${delayedProjects} delayed` : 'No delayed projects';
-                
-                document.querySelector('#projects-content .stat-card .trend').textContent = ongoingProjects > 0 ? `${ongoingProjects} active projects` : 'No active projects';
-                document.querySelector('#projects-content .stat-card.ongoing .trend').textContent = delayedProjects > 0 ? `${delayedProjects} behind schedule` : 'No projects behind schedule';
             }
 
-            // Update charts
             function updateCharts() {
-                // Update progress chart
-                const ongoingCount = projects.filter(p => p.status === 'ongoing').length;
-                const completedCount = projects.filter(p => p.status === 'completed').length;
-                
-                progressChart.data.datasets[0].data = [0, 0, 0, completedCount, 0, 0];
-                progressChart.data.datasets[1].data = [0, 0, 0, ongoingCount, 0, 0];
+                const today = new Date();
+
+                // Update Progress Chart (by month)
+                const monthlyData = { completed: Array(6).fill(0), ongoing: Array(6).fill(0) };
+                projects.forEach(p => {
+                    const projectDate = new Date(p.creationDate);
+                    const monthsAgo = (today.getFullYear() - projectDate.getFullYear()) * 12 + (today.getMonth() - projectDate.getMonth());
+                    if (monthsAgo >= 0 && monthsAgo < 6) {
+                        const monthIndex = 5 - monthsAgo;
+                        if (p.status === 'completed') monthlyData.completed[monthIndex]++;
+                        else if (p.status === 'ongoing') monthlyData.ongoing[monthIndex]++;
+                    }
+                });
+                progressChart.data.datasets[0].data = monthlyData.completed;
+                progressChart.data.datasets[1].data = monthlyData.ongoing;
                 progressChart.update();
                 
-                // Update task distribution chart
+                // Update Task Distribution Chart
                 taskChart.data.datasets[0].data = [
                     projects.filter(p => p.status === 'completed').length,
                     projects.filter(p => p.status === 'ongoing').length,
@@ -1657,158 +1601,108 @@
                 ];
                 taskChart.update();
                 
-                // Update timeline chart
-                if (projects.length > 0) {
-                    const avgProgress = projects.reduce((sum, p) => sum + parseInt(p.progress), 0) / projects.length;
-                    timelineChart.data.datasets[0].data = [10, 25, 40, 55, 70, avgProgress];
-                } else {
-                    timelineChart.data.datasets[0].data = [0, 0, 0, 0, 0, 0];
-                }
+                // Update Timeline Chart (by week)
+                const weeklyProgress = { totals: Array(6).fill(0), counts: Array(6).fill(0) };
+                const oneWeek = 7 * 24 * 60 * 60 * 1000;
+                projects.forEach(p => {
+                    const weeksAgo = Math.floor((today.getTime() - new Date(p.creationDate).getTime()) / oneWeek);
+                    if (weeksAgo >= 0 && weeksAgo < 6) {
+                        const weekIndex = 5 - weeksAgo;
+                        weeklyProgress.totals[weekIndex] += parseInt(p.progress, 10);
+                        weeklyProgress.counts[weekIndex]++;
+                    }
+                });
+                timelineChart.data.datasets[0].data = weeklyProgress.totals.map((total, i) => weeklyProgress.counts[i] > 0 ? total / weeklyProgress.counts[i] : 0);
                 timelineChart.update();
                 
-                // Update performance chart
+                // Update Performance and Resource charts (simulated data)
                 if (projects.length > 0) {
                     const completedPercentage = (projects.filter(p => p.status === 'completed').length / projects.length) * 100;
                     performanceChart.data.datasets[0].data = [70, 72, 75, 78, 82, completedPercentage];
-                    performanceChart.data.datasets[1].data = [65, 68, 70, 72, 75, completedPercentage - 5];
-                } else {
-                    performanceChart.data.datasets[0].data = [0, 0, 0, 0, 0, 0];
-                    performanceChart.data.datasets[1].data = [0, 0, 0, 0, 0, 0];
-                }
-                performanceChart.update();
-                
-                // Update resource chart
-                if (projects.length > 0) {
+                    performanceChart.data.datasets[1].data = [65, 68, 70, 72, 75, completedPercentage - 5 > 0 ? completedPercentage - 5 : 0];
                     resourceChart.data.datasets[0].data = [35, 20, 15, 10, 20];
                 } else {
-                    resourceChart.data.datasets[0].data = [0, 0, 0, 0, 0];
+                    performanceChart.data.datasets[0].data = Array(6).fill(0);
+                    performanceChart.data.datasets[1].data = Array(6).fill(0);
+                    resourceChart.data.datasets[0].data = Array(5).fill(0);
                 }
+                performanceChart.update();
                 resourceChart.update();
             }
 
-            // Add activity
             function addActivity(message) {
                 const activity = {
                     id: Date.now(),
                     message: message,
-                    time: new Date().toLocaleTimeString('en-US', { 
-                        hour: '2-digit', 
-                        minute: '2-digit',
-                        hour12: true 
-                    })
+                    time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })
                 };
-                
                 activities.unshift(activity);
-                
-                // Keep only the last 5 activities
-                if (activities.length > 5) {
-                    activities = activities.slice(0, 5);
-                }
-                
+                if (activities.length > 5) activities.pop();
                 updateActivityList();
             }
 
-            // Update activity list
             function updateActivityList() {
                 const activityList = document.getElementById('activity-list');
-                
-                // Clear activity list
                 activityList.innerHTML = '';
-                
-                // Add activities
                 activities.forEach(activity => {
                     const item = document.createElement('li');
                     item.className = 'activity-item';
-                    
                     item.innerHTML = `
-                        <div class="activity-icon project">
-                            <i class="fas fa-project-diagram"></i>
-                        </div>
+                        <div class="activity-icon project"><i class="fas fa-project-diagram"></i></div>
                         <div class="activity-content">
                             <p>${activity.message}</p>
                             <div class="activity-time">${activity.time}</div>
-                        </div>
-                    `;
-                    
+                        </div>`;
                     activityList.appendChild(item);
                 });
             }
 
-            // Edit project
             function editProject(projectId) {
                 const project = projects.find(p => p.id === projectId);
-                
                 if (project) {
                     modal.style.display = 'flex';
                     modalTitle.textContent = 'Edit Project';
-                    
                     document.getElementById('project-name').value = project.name;
                     document.getElementById('project-status').value = project.status;
                     document.getElementById('project-progress').value = project.progress;
                     document.getElementById('project-due').value = project.due;
-                    
                     currentProjectId = projectId;
                 }
             }
 
-            // Delete project
             function deleteProject(projectId) {
                 const project = projects.find(p => p.id === projectId);
-                
                 if (project && confirm(`Are you sure you want to delete "${project.name}"?`)) {
                     projects = projects.filter(p => p.id !== projectId);
-                    
-                    // Add activity
                     addActivity(`Project "${project.name}" has been deleted`);
-                    
-                    showToast(`Project "${project.name}" has been deleted successfully!`);
-                    
-                    // Update UI
+                    showToast(`Project "${project.name}" deleted successfully!`);
                     updateProjectsTable();
                     updateStats();
                     updateCharts();
                 }
             }
 
-            // View project analytics
             function viewProjectAnalytics(projectId) {
                 const project = projects.find(p => p.id === projectId);
-                
                 if (project) {
                     showToast(`Showing analytics for: ${project.name}`);
-                    
-                    // Switch to analytics section
-                    sidebarLinks.forEach(l => l.classList.remove('active'));
-                    document.querySelector('[data-section="analytics"]').classList.add('active');
-                    
-                    sectionContents.forEach(section => {
-                        section.classList.remove('active');
-                    });
-                    
-                    document.getElementById('analytics-content').classList.add('active');
-                    sectionTitle.textContent = 'Analytics';
+                    document.querySelector('[data-section="analytics"]').click();
                 }
             }
 
-            // Get status text
             function getStatusText(status) {
-                switch(status) {
-                    case 'ongoing': return 'In Progress';
-                    case 'completed': return 'Completed';
-                    case 'pending': return 'Pending';
-                    case 'delayed': return 'Delayed';
-                    default: return status;
-                }
+                return {
+                    ongoing: 'In Progress',
+                    completed: 'Completed',
+                    pending: 'Pending',
+                    delayed: 'Delayed'
+                }[status] || status;
             }
 
-            // Toast notification function
             function showToast(message) {
                 toastMessage.textContent = message;
                 toast.classList.add('show');
-                
-                setTimeout(() => {
-                    toast.classList.remove('show');
-                }, 3000);
+                setTimeout(() => toast.classList.remove('show'), 3000);
             }
 
             // Initialize
