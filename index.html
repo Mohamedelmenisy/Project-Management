@@ -421,6 +421,7 @@
 
         .activity-item {
             display: flex;
+            align-items: center;
             padding: 1rem 0;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
@@ -438,6 +439,11 @@
             justify-content: center;
             margin-right: 1rem;
             flex-shrink: 0;
+        }
+        
+        .deadline-icon {
+            color: var(--success);
+            margin-right: 1rem;
         }
 
         .activity-icon.project {
@@ -457,6 +463,9 @@
 
         .activity-content {
             flex: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .activity-content p {
@@ -466,6 +475,12 @@
         .activity-time {
             font-size: 0.85rem;
             color: var(--gray);
+            text-align: right;
+        }
+        
+        .no-data-message {
+            color: var(--gray);
+            padding: 1rem 0;
         }
 
         /* Modal Styles */
@@ -656,6 +671,65 @@
             background: rgba(99, 102, 241, 0.2);
             border-color: var(--primary);
         }
+        
+        /* Calendar Styles */
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .calendar-weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.5rem;
+        }
+
+        .calendar-day {
+            text-align: center;
+            padding: 1rem 0.5rem;
+            background: rgba(99, 102, 241, 0.1);
+            border-radius: var(--border-radius);
+            font-weight: 600;
+        }
+        
+        .calendar-day.empty {
+            background: transparent;
+        }
+        
+        .calendar-day.today {
+            background-color: rgba(16, 185, 129, 0.2);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: var(--success);
+        }
+        
+        .calendar-day.has-deadline {
+            position: relative;
+        }
+        
+        .calendar-day.has-deadline::after {
+            content: '';
+            position: absolute;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: var(--danger);
+        }
+
 
         /* Footer Styles */
         .footer {
@@ -872,6 +946,7 @@
                         </div>
                         <ul class="activity-list" id="activity-list">
                             <!-- Activities will be added dynamically -->
+                             <li class="no-data-message">No recent activity</li>
                         </ul>
                     </div>
                 </div>
@@ -981,42 +1056,20 @@
                 <!-- Calendar Section Content -->
                 <div id="calendar-content" class="section-content">
                     <div class="projects-section">
-                        <h3>Project Calendar</h3>
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 0.5rem; margin-top: 1.5rem;">
-                            <div style="text-align: center; padding: 1rem; background: rgba(99, 102, 241, 0.1); border-radius: var(--border-radius);">
-                                <div style="font-size: 0.85rem; color: var(--gray);">Mon</div>
-                                <div style="font-weight: 600; margin-top: 0.5rem;">12</div>
-                            </div>
-                            <div style="text-align: center; padding: 1rem; background: rgba(99, 102, 241, 0.1); border-radius: var(--border-radius);">
-                                <div style="font-size: 0.85rem; color: var(--gray);">Tue</div>
-                                <div style="font-weight: 600; margin-top: 0.5rem;">13</div>
-                            </div>
-                            <div style="text-align: center; padding: 1rem; background: rgba(16, 185, 129, 0.2); border-radius: var(--border-radius); border: 1px solid rgba(16, 185, 129, 0.3);">
-                                <div style="font-size: 0.85rem; color: var(--success);">Wed</div>
-                                <div style="font-weight: 600; margin-top: 0.5rem;">14</div>
-                                <div style="font-size: 0.7rem; margin-top: 0.5rem; color: var(--success);">Deadline</div>
-                            </div>
-                            <div style="text-align: center; padding: 1rem; background: rgba(99, 102, 241, 0.1); border-radius: var(--border-radius);">
-                                <div style="font-size: 0.85rem; color: var(--gray);">Thu</div>
-                                <div style="font-weight: 600; margin-top: 0.5rem;">15</div>
-                            </div>
-                            <div style="text-align: center; padding: 1rem; background: rgba(99, 102, 241, 0.1); border-radius: var(--border-radius);">
-                                <div style="font-size: 0.85rem; color: var(--gray);">Fri</div>
-                                <div style="font-weight: 600; margin-top: 0.5rem;">16</div>
-                            </div>
-                            <div style="text-align: center; padding: 1rem; background: rgba(99, 102, 241, 0.1); border-radius: var(--border-radius);">
-                                <div style="font-size: 0.85rem; color: var(--gray);">Sat</div>
-                                <div style="font-weight: 600; margin-top: 0.5rem;">17</div>
-                            </div>
-                            <div style="text-align: center; padding: 1rem; background: rgba(99, 102, 241, 0.1); border-radius: var(--border-radius);">
-                                <div style="font-size: 0.85rem; color: var(--gray);">Sun</div>
-                                <div style="font-weight: 600; margin-top: 0.5rem;">18</div>
-                            </div>
+                        <div class="calendar-header">
+                           <h3 id="calendar-month-year"></h3>
+                        </div>
+                        <div class="calendar-weekdays">
+                            <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+                        </div>
+                        <div class="calendar-grid" id="calendar-grid">
+                            <!-- Calendar days will be generated by JS -->
                         </div>
                         <div style="margin-top: 2rem;">
                             <h4 style="margin-bottom: 1rem;">Upcoming Deadlines</h4>
                             <ul class="activity-list" id="calendar-deadlines">
                                 <!-- Calendar deadlines will be added dynamically -->
+                                <li class="no-data-message">No upcoming deadlines</li>
                             </ul>
                         </div>
                     </div>
@@ -1169,16 +1222,15 @@
             // Helper function to get relative labels for the last N weeks
             function getRelativeWeekLabels(n) {
                 const labels = [];
-                for (let i = n - 1; i > 0; i--) {
-                    labels.push(`${i} weeks ago`);
+                for (let i = n - 1; i > 1; i--) {
+                     labels.push(`${i} weeks ago`);
                 }
-                labels.push('Last week');
-                labels.push('This week');
+                if (n > 1) labels.push('Last week');
+                if (n > 0) labels.push('This week');
                 return labels;
             }
 
             // Initialize Charts
-            // Progress Chart
             const progressCtx = document.getElementById('progressChart').getContext('2d');
             const progressChart = new Chart(progressCtx, {
                 type: 'bar',
@@ -1186,12 +1238,12 @@
                     labels: getLastNMonths(6),
                     datasets: [{
                         label: 'Completed Projects',
-                        data: [],
+                        data: Array(6).fill(0),
                         backgroundColor: '#6366f1',
                         borderRadius: 6
                     }, {
                         label: 'In Progress',
-                        data: [],
+                        data: Array(6).fill(0),
                         backgroundColor: '#10b981',
                         borderRadius: 6
                     }]
@@ -1200,37 +1252,15 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: {
-                            position: 'top',
-                            labels: {
-                                color: '#f8fafc'
-                            }
-                        }
+                        legend: { position: 'top', labels: { color: '#f8fafc' } }
                     },
                     scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                stepSize: 1,
-                                color: '#94a3b8'
-                            },
-                            grid: {
-                                color: 'rgba(255, 255, 255, 0.1)'
-                            }
-                        },
-                        x: {
-                            ticks: {
-                                color: '#94a3b8'
-                            },
-                            grid: {
-                                color: 'rgba(255, 255, 255, 0.1)'
-                            }
-                        }
+                        y: { beginAtZero: true, ticks: { stepSize: 1, color: '#94a3b8' }, grid: { color: 'rgba(255, 255, 255, 0.1)' } },
+                        x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255, 255, 255, 0.1)' } }
                     }
                 }
             });
 
-            // Task Distribution Chart
             const taskCtx = document.getElementById('taskChart').getContext('2d');
             const taskChart = new Chart(taskCtx, {
                 type: 'doughnut',
@@ -1238,31 +1268,18 @@
                     labels: ['Completed', 'In Progress', 'Pending', 'Delayed'],
                     datasets: [{
                         data: [0, 0, 0, 0],
-                        backgroundColor: [
-                            '#8b5cf6',
-                            '#10b981',
-                            '#f59e0b',
-                            '#ef4444'
-                        ],
+                        backgroundColor: ['#8b5cf6', '#10b981', '#f59e0b', '#ef4444'],
                         borderWidth: 0
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: {
-                                color: '#f8fafc'
-                            }
-                        }
-                    },
+                    plugins: { legend: { position: 'bottom', labels: { color: '#f8fafc' } } },
                     cutout: '70%'
                 }
             });
 
-            // Timeline Chart
             const timelineCtx = document.getElementById('timelineChart').getContext('2d');
             const timelineChart = new Chart(timelineCtx, {
                 type: 'line',
@@ -1270,7 +1287,7 @@
                     labels: getRelativeWeekLabels(6),
                     datasets: [{
                         label: 'Average Project Progress',
-                        data: [],
+                        data: Array(6).fill(0),
                         borderColor: '#6366f1',
                         backgroundColor: 'rgba(99, 102, 241, 0.1)',
                         borderWidth: 2,
@@ -1281,42 +1298,19 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            labels: {
-                                color: '#f8fafc'
-                            }
-                        }
-                    },
+                    plugins: { legend: { labels: { color: '#f8fafc' } } },
                     scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 100,
-                            ticks: {
-                                color: '#94a3b8'
-                            },
-                            grid: {
-                                color: 'rgba(255, 255, 255, 0.1)'
-                            }
-                        },
-                        x: {
-                            ticks: {
-                                color: '#94a3b8'
-                            },
-                            grid: {
-                                color: 'rgba(255, 255, 255, 0.1)'
-                            }
-                        }
+                        y: { beginAtZero: true, max: 100, ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255, 255, 255, 0.1)' } },
+                        x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255, 255, 255, 0.1)' } }
                     }
                 }
             });
 
-            // Performance Chart
             const performanceCtx = document.getElementById('performanceChart').getContext('2d');
             const performanceChart = new Chart(performanceCtx, {
                 type: 'line',
                 data: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    labels: getLastNMonths(6),
                     datasets: [{
                         label: 'Team Performance',
                         data: [0, 0, 0, 0, 0, 0],
@@ -1335,40 +1329,17 @@
                         tension: 0.4
                     }]
                 },
-                options: {
+                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            labels: {
-                                color: '#f8fafc'
-                            }
-                        }
-                    },
+                    plugins: { legend: { labels: { color: '#f8fafc' } } },
                     scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 100,
-                            ticks: {
-                                color: '#94a3b8'
-                            },
-                            grid: {
-                                color: 'rgba(255, 255, 255, 0.1)'
-                            }
-                        },
-                        x: {
-                            ticks: {
-                                color: '#94a3b8'
-                            },
-                            grid: {
-                                color: 'rgba(255, 255, 255, 0.1)'
-                            }
-                        }
+                        y: { beginAtZero: true, max: 100, ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255, 255, 255, 0.1)' } },
+                        x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255, 255, 255, 0.1)' } }
                     }
                 }
             });
 
-            // Resource Chart
             const resourceCtx = document.getElementById('resourceChart').getContext('2d');
             const resourceChart = new Chart(resourceCtx, {
                 type: 'polarArea',
@@ -1376,37 +1347,19 @@
                     labels: ['Development', 'Design', 'Testing', 'Documentation', 'Management'],
                     datasets: [{
                         data: [0, 0, 0, 0, 0],
-                        backgroundColor: [
-                            '#6366f1',
-                            '#10b981',
-                            '#f59e0b',
-                            '#8b5cf6',
-                            '#ef4444'
-                        ],
+                        backgroundColor: ['#6366f1', '#10b981', '#f59e0b', '#8b5cf6', '#ef4444'],
                         borderWidth: 0
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: {
-                                color: '#f8fafc'
-                            }
-                        }
-                    }
+                    plugins: { legend: { position: 'bottom', labels: { color: '#f8fafc' } } }
                 }
             });
 
             // Data Management
-            let projects = [
-                {id: 1, name: "Initial Design Mockup", status: "completed", progress: "100", due: "2025-09-15", creationDate: new Date("2025-08-10")},
-                {id: 2, name: "Backend API Development", status: "completed", progress: "100", due: "2025-10-20", creationDate: new Date("2025-09-25")},
-                {id: 3, name: "Frontend Implementation", status: "ongoing", progress: "45", due: "2025-11-05", creationDate: new Date("2025-10-05")},
-                {id: 4, name: "User Testing Phase", status: "pending", progress: "0", due: "2025-11-15", creationDate: new Date("2025-10-20")}
-            ];
+            let projects = [];
             let activities = [];
             let currentFilter = 'all';
             let currentProjectId = null;
@@ -1484,16 +1437,14 @@
                         status: projectStatus,
                         progress: projectProgress,
                         due: projectDue,
-                        creationDate: new Date()
+                        creationDate: new Date().toISOString()
                     };
                     projects.push(newProject);
                     addActivity(`New project "${projectName}" has been created`);
                     showToast(`Project "${projectName}" added successfully!`);
                 }
                 
-                updateProjectsTable();
-                updateStats();
-                updateCharts();
+                updateAllUI();
                 modal.style.display = 'none';
             });
 
@@ -1503,7 +1454,8 @@
             const filterButtons = document.querySelectorAll('.filter-btn');
             filterButtons.forEach(btn => {
                 btn.addEventListener('click', function() {
-                    filterButtons.forEach(b => b.classList.remove('active'));
+                    const parent = this.parentElement;
+                    parent.querySelector('.active').classList.remove('active');
                     this.classList.add('active');
                     currentFilter = this.getAttribute('data-filter');
                     updateProjectsTable();
@@ -1520,10 +1472,16 @@
                     const matchesFilter = currentFilter === 'all' || project.status === currentFilter;
                     return matchesSearch && matchesFilter;
                 });
+
+                if (filteredProjects.length === 0) {
+                     tableBody.innerHTML = `<tr><td colspan="6" style="text-align:center; color: var(--gray);">No projects found.</td></tr>`;
+                     return;
+                }
                 
                 filteredProjects.forEach(project => {
                     const row = document.createElement('tr');
-                    const dueDate = new Date(project.due);
+                    // Add a time zone offset to parse the date correctly as local time
+                    const dueDate = new Date(project.due + 'T00:00:00');
                     const formattedDate = dueDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
                     
                     row.innerHTML = `
@@ -1572,12 +1530,16 @@
                 
                 document.querySelector('#projects-content .stat-card:nth-child(1) .value').textContent = ongoingProjects;
                 document.querySelector('#projects-content .stat-card.ongoing .value').textContent = delayedProjects;
+
+                document.querySelector('#dashboard-content .stat-card:nth-child(1) .trend').textContent = totalProjects > 0 ? `${totalProjects} total projects` : 'No projects yet';
+                document.querySelector('#dashboard-content .stat-card.ongoing .trend').textContent = ongoingProjects > 0 ? `${ongoingProjects} in progress` : 'No ongoing projects';
+                document.querySelector('#dashboard-content .stat-card.completed .trend').textContent = completedProjects > 0 ? `${completedProjects} completed` : 'No completed projects';
+                document.querySelector('#dashboard-content .stat-card.delayed .trend').textContent = delayedProjects > 0 ? `${delayedProjects} delayed` : 'No delayed projects';
             }
 
             function updateCharts() {
                 const today = new Date();
 
-                // Update Progress Chart (by month)
                 const monthlyData = { completed: Array(6).fill(0), ongoing: Array(6).fill(0) };
                 projects.forEach(p => {
                     const projectDate = new Date(p.creationDate);
@@ -1592,7 +1554,6 @@
                 progressChart.data.datasets[1].data = monthlyData.ongoing;
                 progressChart.update();
                 
-                // Update Task Distribution Chart
                 taskChart.data.datasets[0].data = [
                     projects.filter(p => p.status === 'completed').length,
                     projects.filter(p => p.status === 'ongoing').length,
@@ -1601,7 +1562,6 @@
                 ];
                 taskChart.update();
                 
-                // Update Timeline Chart (by week)
                 const weeklyProgress = { totals: Array(6).fill(0), counts: Array(6).fill(0) };
                 const oneWeek = 7 * 24 * 60 * 60 * 1000;
                 projects.forEach(p => {
@@ -1615,17 +1575,7 @@
                 timelineChart.data.datasets[0].data = weeklyProgress.totals.map((total, i) => weeklyProgress.counts[i] > 0 ? total / weeklyProgress.counts[i] : 0);
                 timelineChart.update();
                 
-                // Update Performance and Resource charts (simulated data)
-                if (projects.length > 0) {
-                    const completedPercentage = (projects.filter(p => p.status === 'completed').length / projects.length) * 100;
-                    performanceChart.data.datasets[0].data = [70, 72, 75, 78, 82, completedPercentage];
-                    performanceChart.data.datasets[1].data = [65, 68, 70, 72, 75, completedPercentage - 5 > 0 ? completedPercentage - 5 : 0];
-                    resourceChart.data.datasets[0].data = [35, 20, 15, 10, 20];
-                } else {
-                    performanceChart.data.datasets[0].data = Array(6).fill(0);
-                    performanceChart.data.datasets[1].data = Array(6).fill(0);
-                    resourceChart.data.datasets[0].data = Array(5).fill(0);
-                }
+                // Keep other charts simple or update with real data if available
                 performanceChart.update();
                 resourceChart.update();
             }
@@ -1644,6 +1594,10 @@
             function updateActivityList() {
                 const activityList = document.getElementById('activity-list');
                 activityList.innerHTML = '';
+                if (activities.length === 0) {
+                     activityList.innerHTML = `<li class="no-data-message">No recent activity</li>`;
+                     return;
+                }
                 activities.forEach(activity => {
                     const item = document.createElement('li');
                     item.className = 'activity-item';
@@ -1656,6 +1610,66 @@
                     activityList.appendChild(item);
                 });
             }
+            
+            function renderCalendar() {
+                const grid = document.getElementById('calendar-grid');
+                const monthYearHeader = document.getElementById('calendar-month-year');
+                const today = new Date();
+                const month = today.getMonth();
+                const year = today.getFullYear();
+                
+                monthYearHeader.textContent = today.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+                grid.innerHTML = '';
+
+                const firstDay = new Date(year, month, 1).getDay();
+                const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+                for (let i = 0; i < firstDay; i++) {
+                    grid.innerHTML += `<div class="calendar-day empty"></div>`;
+                }
+                
+                for (let i = 1; i <= daysInMonth; i++) {
+                    const dayEl = document.createElement('div');
+                    dayEl.className = 'calendar-day';
+                    dayEl.textContent = i;
+                    if (i === today.getDate() && month === today.getMonth() && year === today.getFullYear()) {
+                        dayEl.classList.add('today');
+                    }
+                    grid.appendChild(dayEl);
+                }
+            }
+            
+            function updateUpcomingDeadlines() {
+                const deadlinesList = document.getElementById('calendar-deadlines');
+                deadlinesList.innerHTML = '';
+                const today = new Date();
+                today.setHours(0,0,0,0);
+
+                const upcomingProjects = projects
+                    .filter(p => new Date(p.due) >= today)
+                    .sort((a, b) => new Date(a.due) - new Date(b.due));
+                
+                if (upcomingProjects.length === 0) {
+                    deadlinesList.innerHTML = `<li class="no-data-message">No upcoming deadlines</li>`;
+                    return;
+                }
+
+                upcomingProjects.forEach(project => {
+                    const item = document.createElement('li');
+                    item.className = 'activity-item';
+                    const dueDate = new Date(project.due + 'T00:00:00');
+                    const formattedDate = dueDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                    
+                    item.innerHTML = `
+                        <div class="deadline-icon"><i class="fas fa-clock"></i></div>
+                        <div class="activity-content">
+                            <p>${project.name}</p>
+                            <div class="activity-time">${formattedDate}</div>
+                        </div>`;
+                    deadlinesList.appendChild(item);
+                });
+            }
+
 
             function editProject(projectId) {
                 const project = projects.find(p => p.id === projectId);
@@ -1676,9 +1690,7 @@
                     projects = projects.filter(p => p.id !== projectId);
                     addActivity(`Project "${project.name}" has been deleted`);
                     showToast(`Project "${project.name}" deleted successfully!`);
-                    updateProjectsTable();
-                    updateStats();
-                    updateCharts();
+                    updateAllUI();
                 }
             }
 
@@ -1705,11 +1717,17 @@
                 setTimeout(() => toast.classList.remove('show'), 3000);
             }
 
+            function updateAllUI() {
+                 updateProjectsTable();
+                 updateStats();
+                 updateCharts();
+                 updateActivityList();
+                 renderCalendar();
+                 updateUpcomingDeadlines();
+            }
+
             // Initialize
-            updateProjectsTable();
-            updateStats();
-            updateCharts();
-            updateActivityList();
+            updateAllUI();
         });
     </script>
 </body>
